@@ -10,6 +10,8 @@
 #include "dict.h"
 #include "mem.h"
 
+#define DICT_DEBUG 0
+
 /* create a new dictionary entry (key + value) */
 DICT_ENTRY *dictEntry_new(char *key, void *value) {
      DICT_ENTRY *nde = (DICT_ENTRY *)malloc(sizeof(DICT_ENTRY));
@@ -74,7 +76,7 @@ void dict_freeValues(DICT *d, Destructor destructo) {
 void _dict_put(DICT *d, char *key, char *orig_key, void *data) {
      char *kp = key;
      int ix;
-#ifdef DEBUG
+#ifdef DICT_DEBUG
      printf("putting %s\n", key); /* debug */
 #endif
      /* if the key is empty, we've found or created the appropriate
@@ -82,7 +84,7 @@ void _dict_put(DICT *d, char *key, char *orig_key, void *data) {
      if(!*kp) {
 	  DICT_ENTRY *newEntry;
 	  newEntry = dictEntry_new(orig_key, data);
-#ifdef DEBUG
+#ifdef DICT_DEBUG
 	  printf("adding new entry %s (%p)\n", orig_key, newEntry);
 	  fflush(stdout);
 #endif
@@ -93,7 +95,7 @@ void _dict_put(DICT *d, char *key, char *orig_key, void *data) {
      while(!isalpha(*kp)) {
 	  kp++;
 	  if(!*kp) { /* last char is non-alpha */
-#ifdef DEBUG
+#ifdef DICT_DEBUG
 	       printf("last char of %s is non-alpha\n",orig_key);
 #endif
 	       /* add to this node and quit */
@@ -104,7 +106,7 @@ void _dict_put(DICT *d, char *key, char *orig_key, void *data) {
      ix = tolower(*kp) - 'a';
      /* if the appropriate subtrie does not exist, create it */
      if(!d->children[ix]) {
-#ifdef DEBUG
+#ifdef DICT_DEBUG
 	  printf("creating subtree for %c\n",*kp); /* debug */
 #endif
 	  d->children[ix] = dict_new();
@@ -128,7 +130,7 @@ void *_dict_get(DICT *d, char *key, char *orig_key) {
 	  /* do a linear search of this node's entries */
 	  int i, len;
 	  len = list_length(d->entries);
-#ifdef DEBUG
+#ifdef DICT_DEBUG
 	  printf("searching %d entries for %s\n",len,orig_key); /* debug */
 #endif
 	  /* search from the end, so that new values shadow old */
@@ -140,7 +142,7 @@ void *_dict_get(DICT *d, char *key, char *orig_key) {
 	  }
 	  return NULL;
      }
-#ifdef DEBUG
+#ifdef DICT_DEBUG
      printf("getting %s\n",kp); /* debug */
 #endif
      ix = tolower(*kp) - 'a';
@@ -156,7 +158,7 @@ LIST *_dict_getAll(DICT *d, char *key, char *orig_key) {
      while(*kp && !isalpha(*kp)) {
 	  kp++;
      }
-#ifdef DEBUG
+#ifdef DICT_DEBUG
      printf("getting %s\n",kp); /* debug */
 #endif
      if(!*kp) {
@@ -191,12 +193,12 @@ void dict_traverse(DICT *d, TraversalAction action, void *action_arg) {
      if(d->entries) {
 	  int len;
 	  len = list_length(d->entries);
-#ifdef DEBUG
+#ifdef DICT_DEBUG
 	  printf("%d entries\n", len);
 #endif
 	  for(i = 0; i < len; i++) {
 	       DICT_ENTRY *de = (DICT_ENTRY *)list_get(d->entries,i);
-#ifdef DEBUG
+#ifdef DICT_DEBUG
 	       printf("entry %d = %p\n", i, de);
 #endif
 	       action(de->key, de->value, action_arg);

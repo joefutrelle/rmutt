@@ -74,6 +74,7 @@ LIST *expand_choice(GRAMMAR *gram, LIST *c) {
 LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
      RULE *r;
      LIST *result;
+     int i;
 
      stackDepth++;
      if(maxStackDepth > 0 && stackDepth > maxStackDepth) {
@@ -89,7 +90,9 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	  break;
      case LABEL_T:
 #ifdef DEBUG
-	  fprintf(stderr,"expanding %s\n",g->l);
+	  for(i = 0; i < stackDepth-1; i++)
+	       fputc('|',stderr);
+	  fprintf(stderr,"+-%s\n",g->l);
 #endif
 	  r = grammar_lookUp(gram,g->l);
 	  if(r) {

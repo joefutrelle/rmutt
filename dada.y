@@ -15,6 +15,7 @@
   extern char *topRule;
 
   char *curPack = NULL;
+
   %}
 
 %union {
@@ -116,8 +117,27 @@ Choices:
 	list_add(choices,$1);
 	$$=choices;
    }
+   | Choice '&' INTEGER {
+	LIST *choices=list_new();
+	{
+	     int i;
+	     for(i = 0; i < $3; i++) {
+		  list_add(choices,$1);
+	     }
+	}
+	$$=choices;
+   }
    | Choices '|' Choice {
 	list_add($1,$3);
+	$$=$1;
+   }
+   | Choices '|' Choice '&' INTEGER {
+	{
+	     int i;
+	     for(i = 0; i < $5; i++) {
+		  list_add($1,$3);
+	     }
+	}
 	$$=$1;
    }
    ;
@@ -138,11 +158,11 @@ Terms:
 	$$=terms;
    }
    | Terms QualifiedTerm {
-	list_add($1,$2); 
+	list_add($1,$2);
 	$$=$1;
    }
    | Terms ',' QualifiedTerm {
-	list_add($1,$3); 
+	list_add($1,$3);
 	$$=$1;
    }
    ;

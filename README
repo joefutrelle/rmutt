@@ -13,9 +13,16 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-1.1
+1.2
 
 CHANGE HISTORY
+
+1.2
+
+* Changed stack size limit behavior from exiting to halting
+  expansion at the current depth.
+* Added "&" choice qualifier to multiply the probability that
+  a choice will be selected.
 
 1.1
 
