@@ -68,7 +68,7 @@ LIST *expand_choice(GRAMMAR *gram, LIST *c) {
 	  int j;
 	  int x;
 	  GRAMBIT *g = (GRAMBIT *)list_get(c,i);
-	  x = (rand() % ((g->max_x - g->min_x) + 1)) + g->min_x;
+	  x = (random() % ((g->max_x - g->min_x) + 1)) + g->min_x;
 	  for(j = 0; j < x; j++)
 	       list_appendAndFree(l,grammar_expand(gram,g));
      }
