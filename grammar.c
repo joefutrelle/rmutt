@@ -77,6 +77,7 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 
      stackDepth++;
      if(maxStackDepth > 0 && stackDepth > maxStackDepth) {
+	  fprintf(stderr,"warning: stack depth exceeded\n");
 	  result = list_new();
 	  return result;
      }
