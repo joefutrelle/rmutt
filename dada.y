@@ -196,7 +196,10 @@ Term:
 PackagedLabel:
    LABEL {
 	if(curPack) {
-	     $$ = gstr_cat(curPack,gstr_cat(".",$1));
+	     char *dotLabel;
+	     dotLabel = gstr_cat(".",$1);
+	     $$ = gstr_cat(curPack,dotLabel);
+	     free(dotLabel);
 	     free($1);
 	} else {
 	     $$=$1;
