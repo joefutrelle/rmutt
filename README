@@ -23,6 +23,9 @@ CHANGE HISTORY
   expansion at the current depth.
 * Added "&" choice qualifier to multiply the probability that
   a choice will be selected.
+* Changed from rand() to random() for better random number
+  generation.
+* Added test script and test target to Makefile
 
 1.1
 
