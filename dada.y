@@ -229,6 +229,6 @@ Namespace:
 %%
 
 int yyerror(char *s) {
-  printf("error: %s\n",s);
+  fprintf(stderr,"error: %s\n",s);
   return 0;
 }
