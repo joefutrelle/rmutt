@@ -4,6 +4,10 @@
 #include "list.h"
 #include "rxutil.h"
 
+extern int maxStackDepth;
+
+int stackDepth = 0;
+
 void grammar_add(GRAMMAR *g, RULE *r) {
 #ifdef DEBUG
      printf("adding rule: %s\n",rule_getLabel(r));
@@ -32,6 +36,12 @@ LIST *expand_choice(GRAMMAR *gram, LIST *c) {
 LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
      RULE *r;
      LIST *result;
+
+     stackDepth++;
+     if(maxStackDepth > 0 && stackDepth > maxStackDepth) {
+	  fprintf(stderr,"error: max stack depth (%d) exceeded\n",maxStackDepth);
+	  exit(-1);
+     }
 
      result = list_new();
      switch(g->type) {
@@ -66,7 +76,7 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	       LIST *onlyChoice;
 	       char *str;
 	       str = grammar_produce(gram,choice_new(rule_getChoices(g)));
-	       /* FIXME: memory leak: leaks the new choice */
+	       /* FIXME: leaks the new choice */
 	       r = rule_new(rule_getLabel(g),NULL);
 	       onlyChoice = list_new();
 	       list_add(onlyChoice,literal_new(str));
@@ -86,6 +96,9 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	  list_add(result,g);
 	  break;
      }
+
+     stackDepth--;
+
      return result;
 }
 

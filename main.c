@@ -1,4 +1,5 @@
 #include <time.h>
+#include <unistd.h>
 #include "dict.h"
 #include "list.h"
 #include "grambit.h"
@@ -14,22 +15,39 @@ extern FILE *yyin;
 DICT *grammar;
 char *topRule = NULL;
 
+int maxStackDepth = -1;
+
+void usage() {
+     fprintf(stderr,"usage: rmutt [-s] [grammar]\n");
+     fprintf(stderr,"       -s   max stack depth\n");
+}
+
 int main(int argc, char **argv) {
   GRAMBIT *t;
   char *result;
   FILE *in = stdin;
+  char c;
 
   srand(time(NULL));
 
-  if(argc == 2) {
-       in = fopen(argv[1],"r");
+  while((c = getopt(argc, argv, "s:")) != EOF) {
+       switch(c) {
+       case 's':
+	    /* maximum stack depth */
+	    maxStackDepth = atoi(optarg);
+	    break;
+       default:
+	    usage();
+	    exit(-1);
+       }
+  }
+
+  if(argc-optind == 1) {
+       in = fopen(argv[optind],"r");
        if(!in) {
 	    fprintf(stderr,"error: unable to open file %s\n",argv[1]);
 	    exit(-1);
        }
-  } else if(argc > 2) {
-       fprintf(stderr,"usage: rmutt [grammar]\n");
-       exit(-1);
   }
   yyin = in;
 
