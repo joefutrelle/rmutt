@@ -7,6 +7,8 @@ EXE = rmutt
 LIB_DIR = 
 # -L/usr/ncsa/lib
 LIBS = -lfl
+# uncomment the next line to compile under cygwin
+# LIBS = -lfl -lregex
 
 all: $(OBJ) $(EXE)
 
