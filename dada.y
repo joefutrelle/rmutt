@@ -181,6 +181,21 @@ QualifiedTerm:
 	$1->min_x = $3;
 	$1->max_x = $3;
    }
+   | QualifiedTerm '*' {
+        $$=$1;
+	$1->min_x = 0;
+	$1->max_x = 5;
+   }
+   | QualifiedTerm '+' {
+        $$=$1;
+	$1->min_x = 1;
+	$1->max_x = 5;
+   }
+   | QualifiedTerm '?' {
+        $$=$1;
+	$1->min_x = 0;
+	$1->max_x = 1;
+   }
    | QualifiedTerm '>' Term {
 	$$=trans_new($1,$3);
    }
