@@ -10,7 +10,7 @@
 #include "dict.h"
 #include "mem.h"
 
-#define DICT_DEBUG 0
+#undef DICT_DEBUG
 
 /* create a new dictionary entry (key + value) */
 DICT_ENTRY *dictEntry_new(char *key, void *value) {

@@ -8,7 +8,9 @@ extern int maxStackDepth;
 
 int stackDepth = 0;
 
+/*
 static char *getPackage(char *packagedLabel);
+*/
 static char *getLabel(char *packagedLabel);
 
 void grammar_add(GRAMMAR *g, RULE *r) {
@@ -18,6 +20,7 @@ void grammar_add(GRAMMAR *g, RULE *r) {
      dict_put(g,rule_getLabel(r),r);
 }
 
+/*
 static char *getPackage(char *packagedLabel) {
      int i;
      char *p;
@@ -32,6 +35,7 @@ static char *getPackage(char *packagedLabel) {
 	  return gstr_detach(gstr_new(""));
      }
 }
+*/
 
 static char *getLabel(char *packagedLabel) {
      int i;
@@ -74,7 +78,6 @@ LIST *expand_choice(GRAMMAR *gram, LIST *c) {
 LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
      RULE *r;
      LIST *result;
-     int i;
 
      stackDepth++;
      if(maxStackDepth > 0 && stackDepth > maxStackDepth) {
@@ -90,9 +93,12 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	  break;
      case LABEL_T:
 #ifdef DEBUG
+     {
+	  int i;
 	  for(i = 0; i < stackDepth-1; i++)
 	       fputc('|',stderr);
 	  fprintf(stderr,"+-%s\n",g->l);
+     }
 #endif
 	  r = grammar_lookUp(gram,g->l);
 	  if(r) {
