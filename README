@@ -1,0 +1,31 @@
+Hello, welcome to rmutt!
+
+INTRODUCTION
+
+"rmutt" is a utility for generating random text from context-free
+grammars (a.k.a. recursive transition networks). It's modeled after
+Andrew C. Bulhak's late, great "dada engine" which he used to write
+the hilarious Postmodern Thesis Generator.
+
+For more information and complete documentation see
+
+http://www.schneertz.com/rmutt/
+
+VERSION
+
+1.1
+
+CHANGE HISTORY
+
+1.1
+
+* Made it so that when rmutt can't find a rule in the current
+  package, it searches for a rule with the same name in the
+  default package.
+* Fixed memory leak in parser.
+* Added a stack size limit to prevent crashes when grammars
+  have infinite or just very deep grammars
+
+1.0
+
+* Initial revision
