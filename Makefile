@@ -27,5 +27,8 @@ lex.yy.c: dada.lex dada.tab.c
 dada.tab.c: dada.y
 	bison -d dada.y
 
+test: $(EXE)
+	./$(EXE) test.rm
+
 install: $(EXE)
 	cp $(EXE) /usr/local/bin/$(EXE)
