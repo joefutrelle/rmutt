@@ -9,6 +9,7 @@
 #include "rxutil.h"
 
 extern int yyparse(void);
+extern FILE *yyin;
 
 DICT *grammar;
 char *topRule = NULL;
@@ -16,8 +17,21 @@ char *topRule = NULL;
 int main(int argc, char **argv) {
   GRAMBIT *t;
   char *result;
+  FILE *in = stdin;
 
   srand(time(NULL));
+
+  if(argc == 2) {
+       in = fopen(argv[1],"r");
+       if(!in) {
+	    fprintf(stderr,"error: unable to open file %s\n",argv[1]);
+	    exit(-1);
+       }
+  } else if(argc > 2) {
+       fprintf(stderr,"usage: rmutt [grammar]\n");
+       exit(-1);
+  }
+  yyin = in;
 
 #ifdef DEBUG
   fprintf(stderr,"parsing\n");
