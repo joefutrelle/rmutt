@@ -8,6 +8,9 @@ extern int maxStackDepth;
 
 int stackDepth = 0;
 
+static char *getPackage(char *packagedLabel);
+static char *getLabel(char *packagedLabel);
+
 void grammar_add(GRAMMAR *g, RULE *r) {
 #ifdef DEBUG
      printf("adding rule: %s\n",rule_getLabel(r));
@@ -15,8 +18,43 @@ void grammar_add(GRAMMAR *g, RULE *r) {
      dict_put(g,rule_getLabel(r),r);
 }
 
+static char *getPackage(char *packagedLabel) {
+     int i;
+     char *p;
+     for(p = packagedLabel, i = 0; *p && *p != '.'; p++, i++)
+	  ;
+     if(*p) {
+	  GSTR *g = gstr_new("");
+	  gstr_appendn(g, packagedLabel, i);
+	  gstr_appendc(g,'\0');
+	  return gstr_detach(g);
+     } else {
+	  return gstr_detach(gstr_new(""));
+     }
+}
+
+static char *getLabel(char *packagedLabel) {
+     int i;
+     char *p;
+     for(p = packagedLabel, i = 0; *p && *p != '.'; p++, i++)
+	  ;
+     if(*p) {
+	  GSTR *g = gstr_new("");
+	  gstr_append(g, packagedLabel + i + 1);
+	  return gstr_detach(g);
+     } else {
+	  /* this should never happen */
+	  fprintf(stderr, "malformed label: %s\n",packagedLabel);
+	  exit(-1);
+     }
+}
+
 RULE *grammar_lookUp(GRAMMAR *gram, char *label) {
-     return (RULE *)dict_get(gram,label);
+     RULE *r = (RULE *)dict_get(gram,label);
+     if(r) return r;
+     /* not found. try it without the package (if any) */
+     r = (RULE *)dict_get(gram,getLabel(label));
+     return r;
 }
 
 LIST *expand_choice(GRAMMAR *gram, LIST *c) {
