@@ -62,6 +62,10 @@ int main(int argc, char **argv) {
 #endif
 
   if(!grammar) {
+#ifdef DEBUG
+  fprintf(stderr,"no grammar returned from yyparse\n");
+  fflush(stdout);
+#endif
        exit(-1);
   }
 

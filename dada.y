@@ -252,6 +252,6 @@ Namespace:
 %%
 
 int yyerror(char *s) {
-  fprintf(stderr,"error: %s\n",s);
+  fprintf(stderr,"error on line %d: %s\n",g_lineNumber,s);
   return 0;
 }

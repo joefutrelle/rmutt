@@ -11,6 +11,8 @@ GSTR *string;
 GSTR *rx;
 GSTR *replace;
 
+int g_lineNumber;
+
 %}
 
 %x STR
@@ -18,7 +20,8 @@ GSTR *replace;
 %x SUB2
 %x COMMENT
 
-white           [ \t\n]+
+white           [ \t]+
+newline         [\n]
 label           [A-Za-z_][A-Za-z0-9_\-]*
 integer         [0-9]+
 special         [:();|=\[\]{},.><%&]
@@ -28,7 +31,7 @@ package { return(PACKAGE); }
 use { return(USE); }
 
 \/\/ { BEGIN(COMMENT); }
-<COMMENT>\n { BEGIN(INITIAL); }
+<COMMENT>\n { g_lineNumber++; BEGIN(INITIAL); }
 <COMMENT>. { }
 
 \" { string = gstr_new(""); BEGIN(STR); }
@@ -63,6 +66,7 @@ use { return(USE); }
 <SUB2>. { gstr_append(replace,yytext); }
 
 {white}         { }
+{newline} { g_lineNumber++; }
 
 {label} {
      yylval.str = strdup(yytext);
