@@ -28,7 +28,7 @@ dada.tab.c: dada.y
 	bison -d dada.y
 
 test: $(EXE)
-	./$(EXE) test.rm
+	(cd test; sh runtests.sh)
 
 install: $(EXE)
 	cp $(EXE) /usr/local/bin/$(EXE)
