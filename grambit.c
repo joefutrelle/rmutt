@@ -79,10 +79,10 @@ GRAMBIT *rxsub_new(char *rx, char *rep) {
      return ng;
 }
 
-GRAMBIT *mapping_new(char *rx, char *rep) {
+GRAMBIT *mapping_new(char *rx, GRAMBIT *g) {
      GRAMBIT *ng = grambit_new(MAPPING_T);
      ng->rx_rx = strdup(rx);
-     ng->rx_rep = strdup(rep);
+     ng->trans = g;
      return ng;
 }
 

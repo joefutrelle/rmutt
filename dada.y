@@ -221,10 +221,9 @@ Term:
      free($1.rx);
      free($1.rep);
    }
-   | LITERAL '%' LITERAL {
+   | LITERAL '%' QualifiedTerm {
      $$=mapping_new($1,$3);
      free($1);
-     free($3);
    }
    ;
 

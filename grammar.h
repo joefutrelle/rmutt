@@ -17,5 +17,5 @@ extern char *grammar_produce(GRAMMAR *, GRAMBIT *g);
 /* produce the string for just one grambit */
 extern char *grambit_toString(GRAMMAR *, GRAMBIT *);
 
-extern char *transform(char *,GRAMBIT *);
+extern char *transform(GRAMMAR *g, char *,GRAMBIT *);
 

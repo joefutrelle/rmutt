@@ -1,5 +1,6 @@
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
 #include "dict.h"
 #include "list.h"
 #include "grambit.h"
@@ -19,21 +20,23 @@ char *topRule = NULL;
 int maxStackDepth = -1;
 
 void usage() {
-     fprintf(stderr,"usage: rmutt [-s] [-r seed] [-i iteration] [grammar]\n");
+     fprintf(stderr,"usage: rmutt [-s] [-r seed] [-i iteration] [-e rule] [grammar]\n");
      fprintf(stderr,"       -s   max stack depth\n");
      fprintf(stderr,"       -r   random seed\n");
      fprintf(stderr,"       -i   iteration\n");
+     fprintf(stderr,"       -e   rule to expand (default: first)\n");
 }
 
 int main(int argc, char **argv) {
   GRAMBIT *t;
   char *result;
   FILE *in = stdin;
+  char *rte = NULL;
   char c;
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "s:r:i:")) != EOF) {
+  while((c = getopt(argc, argv, "s:r:i:e:")) != EOF) {
        switch(c) {
        case 's':
 	    /* maximum stack depth */
@@ -44,6 +47,9 @@ int main(int argc, char **argv) {
 	    break;
        case 'i':
 	    choose_setIteration(atol(optarg));
+	    break;
+       case 'e':
+	    rte = strdup(optarg);
 	    break;
        default:
 	    usage();
@@ -82,7 +88,11 @@ int main(int argc, char **argv) {
        fprintf(stderr,"dada error: empty grammar\n");
        exit(-1);
   }
-  t = label_new(topRule);
+  if(rte) {
+       t = label_new(rte);
+  } else {
+       t = label_new(topRule);
+  }
   result = grammar_produce(grammar,t);
   printf("%s",result);
   free(result);

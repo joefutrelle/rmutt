@@ -23,9 +23,9 @@ typedef struct _grambit {
      int max_x; /* max      "     "   " ... */
      char *rx_rx; /* regex to replace */
      char *rx_rep; /* string to replace it with */
-     /* rx_rx and rx_rep are also used for simple mappings */
+     /* rx_rx is also used for simple mappings */
      struct _grambit *source; /* source grambit for transformation */
-     struct _grambit *trans; /* trans grambit for transformation */
+     struct _grambit *trans; /* trans grambit for transformation or mapping */
 } GRAMBIT;
 
 #define RULE GRAMBIT
@@ -37,7 +37,7 @@ extern GRAMBIT *label_new(char *);
 extern GRAMBIT *rule_new(char *, LIST *);
 extern GRAMBIT *assignment_new(char *, LIST *);
 extern GRAMBIT *rxsub_new(char *, char *);
-extern GRAMBIT *mapping_new(char *, char *);
+extern GRAMBIT *mapping_new(char *, GRAMBIT *);
 extern GRAMBIT *choice_new(LIST *);
 extern GRAMBIT *trans_new(GRAMBIT *, GRAMBIT *);
 
