@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -pedantic
 #-DDEBUG
-OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o
+OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
 EXE = rmutt
 
 LIB_DIR = 

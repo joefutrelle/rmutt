@@ -3,6 +3,7 @@
 #include "gstr.h"
 #include "list.h"
 #include "rxutil.h"
+#include "choose.h"
 
 extern int maxStackDepth;
 
@@ -68,7 +69,7 @@ LIST *expand_choice(GRAMMAR *gram, LIST *c) {
 	  int j;
 	  int x;
 	  GRAMBIT *g = (GRAMBIT *)list_get(c,i);
-	  x = (random() % ((g->max_x - g->min_x) + 1)) + g->min_x;
+	  x = choose_next((g->max_x - g->min_x) + 1) + g->min_x;
 	  for(j = 0; j < x; j++)
 	       list_appendAndFree(l,grammar_expand(gram,g));
      }
@@ -105,7 +106,7 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	       LIST *cs;
 	       LIST *c;
 	       cs = (LIST *)rule_getChoices(r);
-	       c = (LIST *)list_getRand(cs);
+	       c = (LIST *)list_get(cs, choose_next(list_length(cs)));
 	       list_appendAndFree(result,expand_choice(gram,c));
 	  } else {
 	       fprintf(stderr,"error: rule %s not found\n",g->l);

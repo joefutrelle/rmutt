@@ -4,6 +4,7 @@
 #include "list.h"
 #include "grambit.h"
 #include "grammar.h"
+#include "choose.h"
 
 #include "gstr.h"
 
@@ -18,9 +19,10 @@ char *topRule = NULL;
 int maxStackDepth = -1;
 
 void usage() {
-     fprintf(stderr,"usage: rmutt [-s] [-r seed] [grammar]\n");
+     fprintf(stderr,"usage: rmutt [-s] [-r seed] [-i iteration] [grammar]\n");
      fprintf(stderr,"       -s   max stack depth\n");
      fprintf(stderr,"       -r   random seed\n");
+     fprintf(stderr,"       -i   iteration\n");
 }
 
 int main(int argc, char **argv) {
@@ -31,7 +33,7 @@ int main(int argc, char **argv) {
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "s:r:")) != EOF) {
+  while((c = getopt(argc, argv, "s:r:i:")) != EOF) {
        switch(c) {
        case 's':
 	    /* maximum stack depth */
@@ -39,6 +41,9 @@ int main(int argc, char **argv) {
 	    break;
        case 'r':
 	    srandom(atoi(optarg));
+	    break;
+       case 'i':
+	    choose_setIteration(atol(optarg));
 	    break;
        default:
 	    usage();
