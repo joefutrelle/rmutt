@@ -18,8 +18,9 @@ char *topRule = NULL;
 int maxStackDepth = -1;
 
 void usage() {
-     fprintf(stderr,"usage: rmutt [-s] [grammar]\n");
+     fprintf(stderr,"usage: rmutt [-s] [-r seed] [grammar]\n");
      fprintf(stderr,"       -s   max stack depth\n");
+     fprintf(stderr,"       -r   random seed\n");
 }
 
 int main(int argc, char **argv) {
@@ -30,11 +31,14 @@ int main(int argc, char **argv) {
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "s:")) != EOF) {
+  while((c = getopt(argc, argv, "s:r:")) != EOF) {
        switch(c) {
        case 's':
 	    /* maximum stack depth */
 	    maxStackDepth = atoi(optarg);
+	    break;
+       case 'r':
+	    srandom(atoi(optarg));
 	    break;
        default:
 	    usage();
