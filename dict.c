@@ -41,7 +41,7 @@ void dict_freeValues(DICT *d, Destructor destructo) {
      int i;
      for(i = 0; i < 26; i++) {
 	  if(d->children[i]) {
-	       dict_free(d->children[i]);
+	       dict_freeValues(d->children[i], destructo);
 	  }
      }
      list_freeData(d->entries, destructo);
