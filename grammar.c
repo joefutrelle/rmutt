@@ -50,7 +50,7 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	       c = (LIST *)list_getRand(cs);
 	       list_appendAndFree(result,expand_choice(gram,c));
 	  } else {
-	       printf("error: rule %s not found\n",g->l);
+	       fprintf(stderr,"error: rule %s not found\n",g->l);
 	  }
 	  break;
      case RULE_T:
@@ -100,6 +100,9 @@ char *grammar_produce(GRAMMAR *gram, GRAMBIT *g) {
 	  char *s;
 	  GRAMBIT *g = (GRAMBIT *)list_get(result,i);
 	  s = grambit_toString(gram, g);
+#ifdef DEBUG
+	  printf("produced %s\n",s);
+#endif
 	  gstr_append(str,s);
 	  free(s);
      }
@@ -161,6 +164,6 @@ char *transform(char *str, GRAMBIT *trans) {
 	  else
 	       return(strdup(str));
      }
-     printf("error: illegal transformation\n");
+     fprintf(stderr,"error: illegal transformation\n");
      return NULL;
 }
