@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   FILE *in = stdin;
   char c;
 
-  srand(time(NULL));
+  srandom(time(NULL));
 
   while((c = getopt(argc, argv, "s:")) != EOF) {
        switch(c) {

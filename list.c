@@ -63,7 +63,7 @@ void list_appendAndFree(LIST *a, LIST *b) {
 
 void *list_getRand(LIST *l) {
      long i;
-     i = rand() % list_length(l);
+     i = random() % list_length(l);
      return list_get(l,i);
 }
 
