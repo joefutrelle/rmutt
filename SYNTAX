@@ -17,7 +17,9 @@ choice ::= terms | ;
 
 terms ::= qualified-term | terms [","] qualified-term;
 
-qualified-term ::= term | qualified-term "{" [min ","] max "}" | qualified-term ">" term;
+qualified-term ::= term | qualified-term repetition-qualifier | qualified-term ">" term;
+
+repetition-qualifier ::= "{" [min ","] max "}"  | "*" | "+" | ";";
 
 term ::= packaged-label | literal | "[" rule "]" | rx-sub | mapping;
 
