@@ -137,7 +137,9 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
      case CHOICE_T:
 	  if(1) {
 	       LIST *c;
-	       c = (LIST *)list_getRand(choice_getChoices(g));
+	       LIST *cs;
+	       cs = (LIST *)choice_getChoices(g);
+	       c = (LIST *)list_get(cs, choose_next(list_length(cs)));
 	       list_appendAndFree(result,expand_choice(gram,c));
 	  }
 	  break;
