@@ -1,0 +1,31 @@
+// this tests rmutt's features.
+// it is not completely exhaustive, since it does
+// not test every combination of features.
+// author: joe futrelle
+
+tests: t3 t4 t5 t6 t7 t8 t9 t10 t11 t12 t13;
+
+t3: "random " t3a{16} " ok\n"
+    "(should be random 1's and 0's)\n";
+t3a: "1" | "0";
+t4: "recursion " t4b " ok\n";
+t4b: "." | "(" t4b ")" & 2;
+t5: "anonymous rules" (t5a | "...") " ok\n";
+t5a: "...";
+t6: "repetition" "."{3} " ok\n";
+t7: [t7a: "ok"] "embedded definitions " t7a "\n";
+t7a: "failed";
+t8: [t8a = "ok" | " ok"] "variables " t8a "\n";
+t8a: "failed";
+t9: "mappings " "failed" > ("failed" % "ok") "\n";
+t10: "regexes failed\n" > /failed/ok/;
+t11: "packages " ptest.t11a "\n";
+t11a: "failed";
+t12: "transformation chaining "
+     "failed" > ("failed" % "stage 1 ok") > /stage 1 // "\n";
+t13: "probability multiplication " t13a{16} " ok\n"
+     "(should be mostly zeroes)\n";
+t13a: "0" & 8 | "1";
+
+package ptest;
+t11a: "ok";
