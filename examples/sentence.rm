@@ -1,0 +1,5 @@
+s: np > util.xcap " " w710.verb_trans_past " " np ".\n";
+np: (art " " w710.adv) > util.xan " " w710.adj " " w710.noun_singular |
+    (art " " w710.adj) > util.xan " " w710.noun_singular |
+    (art " " w710.noun_singular) > util.xan;
+art: "a"|"the";
