@@ -164,7 +164,7 @@ LIST *_dict_getAll(DICT *d, char *key, char *orig_key) {
 	  int i, len;
 	  all = list_new();
 	  len = list_length(d->entries);
-	  for(i = 0; i < len; i--) {
+	  for(i = 0; i < len; i++) {
 	       DICT_ENTRY *de = (DICT_ENTRY *)list_get(d->entries,i);
 	       list_add(all, de->value);
 	  }
