@@ -1,0 +1,10 @@
+// packages
+package lesson;
+
+sentence: o " starts with the letter 'O', " greeting.o;
+o: "oatmeal" | "ogre";
+
+package greeting;
+
+s: "hello there " o;
+o: "beautiful" | "Mr. Smarty Pants";

@@ -1,0 +1,5 @@
+// transformation chaining
+thing: name > deleteVowels > slangify > deleteVowels;
+deleteVowels: /[aeiou]//;
+slangify: "chck" % "chiggidy", "snp" % "snippidy";
+name: "check" | "chuck" | "snap" | "snipe";

@@ -1,0 +1,2 @@
+// variables
+t: [a = "0" | "1"] a a;
