@@ -3,7 +3,7 @@
 // not test every combination of features.
 // author: joe futrelle
 
-tests: t3 t4 t5 t6 t7 t8 t9 t10 t11 t12 t13;
+tests: t3 t4 t5 t6 t7 t8 t9 t10 t11 t12 t13; // this is some stuff
 
 t3: "random " t3a{16} " ok\n"
     "(should be random 1's and 0's)\n";
