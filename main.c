@@ -1,5 +1,6 @@
 #include <time.h>
 #include <unistd.h>
+#include <getopt.h>
 #include "dict.h"
 #include "list.h"
 #include "grambit.h"

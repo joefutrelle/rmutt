@@ -6,9 +6,9 @@ EXE = rmutt
 
 LIB_DIR = 
 # comment out the next line to compile under cygwin
-LIBS = -lfl
+# LIBS = -lfl
 # uncomment the next line to compile under cygwin
-# LIBS = -lfl -lregex
+LIBS = -lfl -lregex
 
 all: $(OBJ) $(EXE)
 
