@@ -141,6 +141,10 @@ Terms:
 	list_add($1,$2); 
 	$$=$1;
    }
+   | Terms ',' QualifiedTerm {
+	list_add($1,$3); 
+	$$=$1;
+   }
    ;
 
 QualifiedTerm:
@@ -182,7 +186,7 @@ Term:
      free($1.rx);
      free($1.rep);
    }
-   | LITERAL '=' LITERAL {
+   | LITERAL '%' LITERAL {
      $$=mapping_new($1,$3);
      free($1);
      free($3);

@@ -1,0 +1,38 @@
+# this is an informal BNF of the syntax for rmutt. consult dada.lex
+# and dada.y for the exact syntax.
+
+statement ::= (rule | package) ";"
+
+package ::= "package" package-name;
+
+rule ::= definition | assignment;
+
+definition ::= name ":" choices;
+
+assignment ::= name "=" choices;
+
+choices ::= choice | choices "|" choice;
+
+choice ::= terms | ;
+
+terms ::= qualified-term | terms [","] qualified-term;
+
+qualified-term ::= term | qualified-term "{" [min ","] max "}" | qualified-term ">" term;
+
+term ::= packaged-label | literal | "[" rule "]" | rx-sub | mapping;
+
+mapping ::= literal "=" literal;
+
+packaged-label ::= label | namespace label;
+
+namespace ::= label ".";
+
+literal ::= "\"" char* "\"";
+
+label ::= label-initial-char label-char*;
+
+rx-sub ::= "/" pattern "/" substitution "/";
+
+label-initial-char ::= [A-Za-z_];
+
+label-char ::= [A-Za-z0-9_-];
