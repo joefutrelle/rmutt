@@ -9,7 +9,7 @@ skip ahead in this document to USING RMUTT.
 Compiling rmutt requires flex and bison as well as POSIX regex
 support.  These are standard in virtually all Linux distributions, but
 may need to be downloaded from a GNU archive for other UNIX systems.
-For GNU packages see
+GNU packages can be downloaded from
 
 ftp://ftp.gnu.org/gnu/
 
@@ -20,13 +20,17 @@ http://sources.redhat.com/cygwin/
 
 COMPILING RMUTT
 
-Under UNIX or Cygwin, just unpack the archive, enter the resulting
-directory, run the configure script, and run make.  To do all that,
-run the following commands:
+Under UNIX or Cygwin, just unpack the archive, and enter the resulting
+directory:
 
 	gunzip -c rmutt.tar.gz | tar x
 	cd rmutt
-	./configure
+
+Now edit the Makefile; inside the Makefile are instructions for how to
+modify it to work under Cygwin.  For UNIX variants other than Linux,
+you're on your own.  Once you've edited the Makefile, run the
+following command:
+
 	make
 
 If there are no problems, the directory should now contain an rmutt
@@ -39,10 +43,10 @@ To use the precompiled Windows executable, unpack the .zip file and
 open up the Windows command prompt.  Enter the directory containing
 rmutt.exe and the Cygwin DLL.  You should be able to run rmutt.exe
 from the command line.  Don't move the executable into another
-directory w/o also moving the DLL.
+directory without also moving the DLL along with it.
 
 Using rmutt under UNIX or Cygwin is simpler; just make sure the
-executable is in your path, or just type ./rmutt if you're in the same
+executable is in your path, or type ./rmutt if you're in the same
 directory as the executable.
 
 COMMAND-LINE SYNTAX
