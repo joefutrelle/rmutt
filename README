@@ -13,9 +13,17 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-1.2.2
+1.2.3
 
 CHANGE HISTORY
+
+1.2.3
+
+* Fixed bug where iteration code was using rand() instead of random()
+* Added the following iteration shorthands:
+  - ? => {0,1}
+  - * => {0,5}
+  - + => {1,5}
 
 1.2.2
 
