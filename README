@@ -20,10 +20,9 @@ CHANGE HISTORY
 1.2.2
 
 * Added random seed option.
+* Added line numbers in error reporting.
 
 1.2.1
-
-* Added line numbers in error reporting.
 
 1.2
 
