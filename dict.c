@@ -181,7 +181,7 @@ void *dict_get(DICT *d, char *key) {
 }
 
 LIST *dict_getAll(DICT *d, char *key) {
-     return _dict_get(d, key, key);
+     return _dict_getAll(d, key, key);
 }
 
 void dict_traverse(DICT *d, TraversalAction action, void *action_arg) {
