@@ -5,7 +5,7 @@ OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict
 EXE = rmutt
 
 LIB_DIR = 
-# -L/usr/ncsa/lib
+# comment out the next line to compile under cygwin
 LIBS = -lfl
 # uncomment the next line to compile under cygwin
 # LIBS = -lfl -lregex
