@@ -1,6 +1,9 @@
 // This file contains a large English vocabulary, classified by
-// various parts of speech. It is British, so contains British
-// spellings, place names, and personal names.
+// various parts of speech. It is derived from the CUVOALD
+// machine-readable dictionary and so there may be restrictions
+// on commercial use. Because CUVOALD was itself derived from
+// the Oxford Advanced Learner's Dictionary, the spellings and
+// many of the proper names are British.
 //
 // noun_place: a country, city, or other political place name
 // adv: adverb, e.g.,  "ludicrously", "pressingly", "eagerly"
