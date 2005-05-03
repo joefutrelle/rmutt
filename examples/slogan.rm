@@ -1,0 +1,17 @@
+slogans: slogan{10};
+slogan: gvp > util.xcap " since " year ".\n";
+year: "19" chars.digit{2} | "200" ("0"|"1"|"2"|"3"|"4");
+gvp: gvp_trans | gvp_intrans;
+gvp_trans: advp w710.verb_trans_gerund " " np;
+gvp_intrans: advp w710.verb_intrans_gerund;
+np: snp | pnp;
+snp: (art " " w710.adv) > util.xan " " w710.adj " " w710.noun_singular |
+    (art " " w710.adj) > util.xan " " w710.noun_singular |
+    (art " " w710.noun_singular) > util.xan;
+pnp:((w710.adv " "|) w710.adj " "|) w710.noun_plural;
+art: "a"|"the";
+advp: (w710.adv " "|);
+
+#include "w710.rm"
+#include "util.rm"
+#include "chars.rm"
