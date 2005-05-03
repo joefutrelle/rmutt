@@ -50,6 +50,8 @@
 
 %start Top
 
+%pure-parser
+
 %%
 
 Top:
