@@ -54,6 +54,8 @@
 
 %pure-parser
 
+%expect 5
+
 %%
 
 Top:
