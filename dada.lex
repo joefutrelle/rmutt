@@ -20,7 +20,7 @@ int g_lineNumber;
 
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
-int include_stack_ptr = 0;
+int includeStackPtr = 0;
 
 %}
 
@@ -35,7 +35,7 @@ newline         [\n]
 label           [A-Za-z_][A-Za-z0-9_\-]*
 integer         [0-9]+
 special         [:();|=\[\]{},.><%&+*?]
-filename        [-A-Za-z0-9_. ]+
+filename        [-A-Za-z0-9_./ ]+
 %%
 
 package { return(PACKAGE); }
@@ -104,7 +104,7 @@ use { return(USE); }
 <INCLUDE>\"[ \t]*\n {
      FILE *f;
 
-     if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
+     if ( includeStackPtr >= MAX_INCLUDE_DEPTH )
      {
 	  fprintf( stderr, "Includes nested too deeply" );
 	  exit( 1 );
@@ -117,7 +117,7 @@ use { return(USE); }
 	} else {
 	     yyin = f;
 
-	     include_stack[include_stack_ptr++] =
+	     include_stack[includeStackPtr++] =
 		  YY_CURRENT_BUFFER;
 
 	     yy_switch_to_buffer(
@@ -130,7 +130,7 @@ use { return(USE); }
 }
 
 <<EOF>> {
-        if ( --include_stack_ptr < 0 )
+        if ( --includeStackPtr < 0 )
             {
             yyterminate();
             }
@@ -139,6 +139,6 @@ use { return(USE); }
             {
             yy_delete_buffer( YY_CURRENT_BUFFER );
             yy_switch_to_buffer(
-                 include_stack[include_stack_ptr] );
+                 include_stack[includeStackPtr] );
             }
 }

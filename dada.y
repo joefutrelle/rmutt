@@ -14,6 +14,8 @@
   extern DICT *grammar;
   extern char *topRule;
 
+  extern int includeStackPtr;
+
   char *curPack = NULL;
 
   %}
@@ -78,7 +80,7 @@ Grammar:
 Statement:
   Rule {
        $$=$1;
-       if(!topRule) {
+       if(!topRule && includeStackPtr == 0) {
 	    topRule = rule_getLabel($1);
        }
   }
