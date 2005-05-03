@@ -1,3 +1,7 @@
+#include "w710.rm"
+#include "util.rm"
+#include "chars.rm"
+
 slogans: slogan{10};
 slogan: gvp > util.xcap " since " year ".\n";
 year: "19" chars.digit{2} | "200" ("0"|"1"|"2"|"3"|"4");
@@ -12,6 +16,3 @@ pnp:((w710.adv " "|) w710.adj " "|) w710.noun_plural;
 art: "a"|"the";
 advp: (w710.adv " "|);
 
-#include "w710.rm"
-#include "util.rm"
-#include "chars.rm"
