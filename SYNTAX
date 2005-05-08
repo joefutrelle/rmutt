@@ -1,6 +1,10 @@
 # this is an informal BNF of the syntax for rmutt. consult dada.lex
 # and dada.y for the exact syntax.
 
+grammar ::= (statement | include)*;
+
+include ::= "#include \"" filename "\"";
+
 statement ::= (rule | package) ";"
 
 package ::= "package" package-name;
