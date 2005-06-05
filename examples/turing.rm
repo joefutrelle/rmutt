@@ -1,0 +1,68 @@
+// turing machine in rmutt
+
+program: (
+ init    // initialize tape
+ display // display initial contents / head position of tape
+ s0      // enter first state; this will only return if the TM halts
+);
+
+// the following example implements the following TM:
+
+// [s0, 0, s0, 0, >>]
+// [s0, 1, s1, 0, <<]
+// [s1, 0, s2, 1, >>]
+// [s1, 1, s2, 1, >>]
+// [s2, 0, s3, 0, >>]
+// [s2, 1, s3, 0, >>]
+// [s3, 0, s4, 1, <<]
+// [s3, 1, s4, 1, <<]
+// s4: halt
+
+// which moves right along the tape until it finds a 1,
+// moves left, writes 101, moves left, and halts.
+
+// implementation of the example TM
+s0: head >
+ ("0" % ([head = "0"] move_right s0),
+  "1" % ([head = "0"] move_left s1));
+s1: head >
+ ("0" % ([head = "1"] move_right s2),
+  "1" % ([head = "1"] move_right s2));
+s2: head >
+ ("0" % ([head = "0"] move_right s3),
+  "1" % ([head = "1"] move_right s3));
+s3: head >
+ ("0" % ([head = "1"] move_left s4),
+  "1" % ([head = "1"] move_left s4));
+s4: display; // halt state
+
+// set up the initial state of the tape
+init:
+[left = "0000"]     // portion of the tape to the left of the r/w head
+[head = "0"]        // symbol at the r/w head
+[right = "000000100"] // portion of the tape to the right of the r/w head
+;
+
+// produce text representation of tape and r/w head
+display:
+ space_left "_" space_right "\n"
+ left head right "\n"
+;
+space_left: left > /[01]/ /;
+space_right: right > /[01]/ /;
+
+// move the r/w head one cell to the left
+move_left:
+[old_head = head]
+[head = left > /.*(.)/\1/]
+[left = left > /(.*)./\1/]
+[right = old_head right]
+;
+
+// move the r/w head one cell to the right
+move_right:
+[old_head = head]
+[head = right > /(.).*/\1/]
+[right = right > /.(.*)/\1/]
+[left = left old_head]
+;
