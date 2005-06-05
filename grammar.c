@@ -87,28 +87,44 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
      result = list_new();
 
      x = choose_next((g->max_x - g->min_x) + 1) + g->min_x;
-     for(j = 0; j < x; j++) {
 
+     for(j = 0; j < x; j++) {
 	  switch(g->type) {
 	  case LITERAL_T:
-	       list_add(result,g);
+	  case TRANS_T:
+	       list_add(result,literal_new(grambit_toString(gram, g)));
 	       break;
 	  case LABEL_T:
 #ifdef DEBUG
 	       {
 		    int i;
 		    for(i = 0; i < stackDepth-1; i++)
-			 fputc('|',stderr);
-		    fprintf(stderr,"+-%s\n",g->l);
+			 fputc('>',stdout);
+		    grambit_print(g,stdout);
+		    printf("\n");
 	       }
 #endif
 	       r = grammar_lookUp(gram,g->l);
 	       if(r) {
 		    LIST *cs;
-		    LIST *c;
+		    LIST *c, *ex;
 		    cs = (LIST *)rule_getChoices(r);
 		    c = (LIST *)list_get(cs, choose_next(list_length(cs)));
-		    list_appendAndFree(result,expand_choice(gram,c));
+		    ex = expand_choice(gram,c);
+#ifdef DEBUG
+		    {
+			 int i;
+			 for(i = 0; i < stackDepth-1; i++)
+			      fputc('<',stdout);
+			 for(i = 0; i < ex->length; i++) {
+			      GRAMBIT *gb = (GRAMBIT *)list_get(ex,i);
+			      grambit_print(gb,stdout);
+			 }
+			 printf("\n");
+		    }
+
+#endif		    
+		    list_appendAndFree(result,ex);
 	       } else {
 		    fprintf(stderr,"error: rule %s not found\n",g->l);
 	       }
