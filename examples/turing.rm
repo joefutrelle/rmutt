@@ -4,6 +4,7 @@ program: (
  init    // initialize tape
  display // display initial contents / head position of tape
  s0      // enter first state; this will only return if the TM halts
+ display
 );
 
 // the following example implements the following TM:
@@ -34,7 +35,7 @@ s2: head >
 s3: head >
  ("0" % ([head = "1"] move_left s4),
   "1" % ([head = "1"] move_left s4));
-s4: display; // halt state
+s4: ; // halt state
 
 // set up the initial state of the tape
 init:
@@ -45,11 +46,9 @@ init:
 
 // produce text representation of tape and r/w head
 display:
- space_left "_" space_right "\n"
+ (left > /[01]/ /) "_" (right > /[01]/ /) "\n"
  left head right "\n"
 ;
-space_left: left > /[01]/ /;
-space_right: right > /[01]/ /;
 
 // move the r/w head one cell to the left
 move_left:
