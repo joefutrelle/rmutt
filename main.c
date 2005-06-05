@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
   if(argc-optind == 1) {
        in = fopen(argv[optind],"r");
        if(!in) {
-	    fprintf(stderr,"error: unable to open file %s\n",argv[1]);
+	    fprintf(stderr,"error: unable to open file %s\n",argv[optind]);
 	    exit(-1);
        }
   }
