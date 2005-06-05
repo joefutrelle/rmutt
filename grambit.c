@@ -137,6 +137,15 @@ void grambit_print(GRAMBIT *g, FILE *fp) {
   case ASSIGNMENT_T:
     fprintf(fp, "assignment: %s = ", g->l);
     break;
+  case CHOICE_T:
+    fprintf(fp, "choice:");
+    break;
+  case RXSUB_T:
+       fprintf(fp, "rxsub:");
+       break;
+  case TRANS_T:
+       fprintf(fp, "trans:");
+       break;
   default:
     fprintf(fp, "unknown");
     return;
