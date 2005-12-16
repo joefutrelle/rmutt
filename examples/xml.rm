@@ -1,0 +1,9 @@
+#include "w710.rm"
+#include "sentence.rm"
+
+xml: pi [indent=""] tag "\n";
+pi: "<?xml version='1.0'?>\n";
+tag: [n=name] indent "<" n ">\n" (node "\n"){0,3} indent "</" n ">";
+node: [indent=(indent "  ")] (tag | indent text);
+text: sentence.s;
+name: w710.noun_singular > /[^A-Za-z]/_/;

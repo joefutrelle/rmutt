@@ -1,7 +1,11 @@
 #include "w710.rm"
 #include "util.rm"
 
-s: np > util.xcap " " w710.verb_trans_past " " np ".\n";
+package sentence;
+
+line: s "\n";
+
+s: np > util.xcap " " w710.verb_trans_past " " np ".";
 np: (art " " w710.adv) > util.xan " " w710.adj " " w710.noun_singular |
     (art " " w710.adj) > util.xan " " w710.noun_singular |
     (art " " w710.noun_singular) > util.xan;
