@@ -14,7 +14,7 @@
 extern int yyparse(void);
 extern FILE *yyin;
 
-DICT *grammar;
+GRAMMAR *grammar;
 char *topRule = NULL;
 
 int maxStackDepth = -1;

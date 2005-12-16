@@ -13,9 +13,13 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-1.6
+2.0
 
 CHANGE HISTORY
+
+2.0
+
+* embedded rules and assignments now have lexical scope, rather than dynamic scope.
 
 1.6
 

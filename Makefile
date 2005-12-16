@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -Wall -pedantic
-#-DDEBUG
+# -DDEBUG
 OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
 EXE = rmutt
 

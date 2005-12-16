@@ -9,6 +9,22 @@ extern int maxStackDepth;
 
 int stackDepth = 0;
 
+GRAMMAR *grammar_new() {
+     GRAMMAR *ng = calloc(1,sizeof(GRAMMAR));
+     ng->parent = NULL;
+     ng->contents = dict_new();
+     return ng;
+}
+
+/* destroy a grammar */
+void grammar_free(GRAMMAR *g) {
+/*
+     dict_freeValues(g->contents, (Destructor)grambit_free);
+     free(g);
+*/
+/* FIXME leaks */     
+}
+
 /*
 static char *getPackage(char *packagedLabel);
 */
@@ -16,9 +32,9 @@ static char *getLabel(char *packagedLabel);
 
 void grammar_add(GRAMMAR *g, RULE *r) {
 #ifdef DEBUG
-     printf("adding rule: %s\n",rule_getLabel(r));
+     fprintf(stderr,"adding rule: %s\n",rule_getLabel(r));
 #endif
-     dict_put(g,rule_getLabel(r),r);
+     dict_put(g->contents,rule_getLabel(r),r);
 }
 
 /*
@@ -43,23 +59,50 @@ static char *getLabel(char *packagedLabel) {
      char *p;
      for(p = packagedLabel, i = 0; *p && *p != '.'; p++, i++)
 	  ;
-     if(*p) {
+     if(*p) { /* found a '.' */
 	  GSTR *g = gstr_new("");
 	  gstr_append(g, packagedLabel + i + 1);
 	  return gstr_detach(g);
-     } else {
-	  /* this should never happen */
-	  fprintf(stderr, "malformed label: %s\n",packagedLabel);
-	  exit(-1);
+     } else { /* didn't--this isn't a packaged label */
+	  return NULL;
      }
 }
 
-RULE *grammar_lookUp(GRAMMAR *gram, char *label) {
-     RULE *r = (RULE *)dict_get(gram,label);
-     if(r) return r;
+RULE *grammar_lookUp(GRAMMAR *gram, char *label, int depth) {
+     char *noPackage = NULL;
+     RULE *r = (RULE *)dict_get(gram->contents,label);
+     if(r) {
+#ifdef DEBUG
+	  printf("%d: %s found\n", depth, label);
+#endif
+	  return r;
+     }
      /* not found. try it without the package (if any) */
-     r = (RULE *)dict_get(gram,getLabel(label));
-     return r;
+     noPackage = getLabel(label);
+     if(noPackage) {
+#ifdef DEBUG
+	  printf("%d: %s not found, trying %s\n", depth, label, noPackage);
+#endif
+	  r = (RULE *)dict_get(gram->contents, noPackage);
+     }
+     if(r) {
+#ifdef DEBUG
+	  printf("%d: %s found\n", depth, noPackage);
+#endif
+	  return r;
+     }
+     /* not found. try the parent grammar */
+     if(gram->parent) {
+#ifdef DEBUG
+	  printf("%d: %s not found, trying parent grammar\n",depth,label);
+#endif
+	  r = grammar_lookUp(gram->parent, label, depth-1);
+     }
+     if(r) {
+	  return r;
+     }
+     /* OK, there really is no such rule. */
+     return NULL;
 }
 
 LIST *expand_choice(GRAMMAR *gram, LIST *c) {
@@ -72,17 +115,26 @@ LIST *expand_choice(GRAMMAR *gram, LIST *c) {
      return l;
 }
 
-LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
+LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
      RULE *r;
      LIST *result;
      int x, j;
+     GRAMMAR *gram;
 
      stackDepth++;
+
      if(maxStackDepth > 0 && stackDepth > maxStackDepth) {
 	  fprintf(stderr,"warning: stack depth exceeded\n");
 	  result = list_new();
 	  return result;
      }
+
+     /* create a new grammar stack frame */
+     gram = grammar_new();
+     gram->parent = parentGram;
+#ifdef DEBUG
+     printf("%d has parent %d\n",stackDepth,stackDepth-1);
+#endif
 
      result = list_new();
 
@@ -104,7 +156,7 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 		    printf("\n");
 	       }
 #endif
-	       r = grammar_lookUp(gram,g->l);
+	       r = grammar_lookUp(gram,g->l,stackDepth);
 	       if(r) {
 		    LIST *cs;
 		    LIST *c, *ex;
@@ -131,7 +183,10 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 	       break;
 	  case RULE_T:
 	       /* add the rule to the grammar */
-	       grammar_add(gram,g);
+#ifdef DEBUG
+	       printf("%d: adding rule %s\n",stackDepth,rule_getLabel(g));
+#endif
+	       grammar_add(parentGram,g);
 	       break;
 	  case ASSIGNMENT_T:
 	       /* produce the rhs, and then create a new literal
@@ -148,7 +203,10 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
 		    list_add(onlyChoice,literal_new(str));
 		    free(str);
 		    rule_addChoice(r,onlyChoice);
-		    grammar_add(gram,r);
+#ifdef DEBUG
+		    printf("%d: adding rule %s\n",stackDepth,rule_getLabel(r));
+#endif
+		    grammar_add(parentGram,r);
 	       }
 	       break;
 	  case CHOICE_T:
@@ -167,6 +225,9 @@ LIST *grammar_expand(GRAMMAR *gram, GRAMBIT *g) {
      }
 
      stackDepth--;
+
+     /* release the local frame */
+     grammar_free(gram);
 
      return result;
 }

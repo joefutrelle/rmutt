@@ -11,7 +11,7 @@
 #include "grammar.h"
 #include "gstr.h"
 
-  extern DICT *grammar;
+  extern GRAMMAR *grammar;
   extern char *topRule;
 
   extern int includeStackPtr;
@@ -65,7 +65,7 @@ Top:
 
 Grammar:
   Statement ';' {
-     DICT *gram = dict_new();
+     GRAMMAR *gram = grammar_new();
      if($1) {
 	  grammar_add(gram,$1);
      }
