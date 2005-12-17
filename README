@@ -13,9 +13,13 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.1
+2.2
 
 CHANGE HISTORY
+
+2.2
+
+* added scope qualifiers for nested assignments and rules
 
 2.1
 

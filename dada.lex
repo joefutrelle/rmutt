@@ -34,7 +34,7 @@ white           [ \t]+
 newline         [\n]
 label           [A-Za-z_][A-Za-z0-9_\-]*
 integer         [0-9]+
-special         [:();|=\[\]{},.><%&+*?]
+special         [:();|=\[\]{},.><%&+*?$]
 filename        [-A-Za-z0-9_./ ]+
 %%
 

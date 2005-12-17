@@ -54,7 +54,7 @@ GRAMBIT *label_new(char *text) {
    choices is a list of lists because each choice is a sequence.
    if choices are NULL, create a new empty list so that you
    can add choices with rule_addChoice */
-GRAMBIT *rule_new(char *label, LIST *choices) {
+GRAMBIT *rule_new(char *label, LIST *choices, int scope) {
   GRAMBIT *ng = grambit_new(RULE_T);
   if(label) {
        ng->l = strdup(label);
@@ -63,6 +63,7 @@ GRAMBIT *rule_new(char *label, LIST *choices) {
     list_free(ng->choices);
     ng->choices = choices;
   }
+  ng->scope = scope;
   return ng;
 }
 
@@ -70,8 +71,8 @@ GRAMBIT *rule_new(char *label, LIST *choices) {
    choices is a list of lists because each choice is a sequence.
    if choices are NULL, create a new empty list so that you
    can add choices with assignment_addChoice */
-GRAMBIT *assignment_new(char *label, LIST *choices) {
-  GRAMBIT *ng = rule_new(label, choices);
+GRAMBIT *assignment_new(char *label, LIST *choices, int scope) {
+  GRAMBIT *ng = rule_new(label, choices, scope);
   ng->type = ASSIGNMENT_T;
   return ng;
 }
@@ -98,7 +99,7 @@ GRAMBIT *trans_new(GRAMBIT *s, GRAMBIT *t) {
 }
 
 GRAMBIT *choice_new(LIST *choices) {
-     GRAMBIT *ng = rule_new(NULL, choices);
+     GRAMBIT *ng = rule_new(NULL, choices, 0);
      ng->type = CHOICE_T;
      return ng;
 }

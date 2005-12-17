@@ -60,7 +60,7 @@
 
 Top:
   Grammar {
-    grammar = $1;
+    grammar = (GRAMMAR *) $1;
   };
 
 Grammar:
@@ -69,11 +69,11 @@ Grammar:
      if($1) {
 	  grammar_add(gram,$1);
      }
-     $$=gram;
+     $$=(void *)gram;
   }
   | Grammar Statement ';' {
     if($2) {
-	 grammar_add($1,$2);
+	 grammar_add((GRAMMAR *)$1,$2);
     }
     $$=$1;
   }
@@ -101,7 +101,7 @@ Rule:
    PackagedLabel ':' Choices {
      GRAMBIT *nr;
 
-     nr = rule_new($1, $3);
+     nr = rule_new($1, $3, LEXICAL_SCOPE);
      free($1);
 
      $$=nr;
@@ -109,8 +109,24 @@ Rule:
    | PackagedLabel '=' Choices { 
      GRAMBIT *na;
 
-     na = assignment_new($1, $3);
+     na = assignment_new($1, $3, LEXICAL_SCOPE);
      free($1);
+
+     $$=na;
+   }
+   | '$' PackagedLabel ':' Choices {
+     GRAMBIT *nr;
+
+     nr = rule_new($2, $4, DYNAMIC_SCOPE);
+     free($2);
+
+     $$=nr;
+   }
+   | '$' PackagedLabel '=' Choices { 
+     GRAMBIT *na;
+
+     na = assignment_new($2, $4, DYNAMIC_SCOPE);
+     free($2);
 
      $$=na;
    }

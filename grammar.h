@@ -11,7 +11,7 @@ extern GRAMMAR *grammar_new();
 extern void grammar_free(GRAMMAR *);
 
 extern void grammar_add(GRAMMAR *, RULE *);
-extern RULE *grammar_lookUp(GRAMMAR *, char *, int);
+extern RULE *grammar_lookUp(GRAMMAR *, char *);
 
 /* expand the grambit of the grammar into a sequence of
    grambits, selected according to the rules of the grammar */

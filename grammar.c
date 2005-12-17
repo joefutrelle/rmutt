@@ -10,6 +10,8 @@ extern int dynamic;
 
 int stackDepth = 0;
 
+GRAMMAR *grammar_binding(GRAMMAR *gram, char *label);
+
 GRAMMAR *grammar_new() {
      GRAMMAR *ng = calloc(1,sizeof(GRAMMAR));
      ng->parent = NULL;
@@ -29,10 +31,23 @@ static char *getPackage(char *packagedLabel);
 static char *getLabel(char *packagedLabel);
 
 void grammar_add(GRAMMAR *g, RULE *r) {
+     char *label = rule_getLabel(r);
 #ifdef DEBUG
-     fprintf(stderr,"adding rule: %s\n",rule_getLabel(r));
+     fprintf(stderr,"adding rule: %s\n",label);
 #endif
-     dict_put(g->contents,rule_getLabel(r),r);
+     /* if the scope is lexical, add to this grammar */
+     if(r->scope == LEXICAL_SCOPE) {
+	  dict_put(g->contents,label,r);
+     } else {
+	  /* otherwise walk up the grammar stack */
+	  GRAMMAR *frame = grammar_binding(g, label);
+	  if(!frame) { /* no binding. walk up to top frame */
+	       for(frame = g; frame->parent; frame = frame->parent)
+		    ;
+	  }
+	  /* now we're at the right frame. */
+	  dict_put(frame->contents,label,r);
+     }
 }
 
 /*
@@ -66,40 +81,46 @@ static char *getLabel(char *packagedLabel) {
      }
 }
 
-RULE *grammar_lookUp(GRAMMAR *gram, char *label, int depth) {
+/* walk the grammar stack to find the grammar with a binding for the given label */
+GRAMMAR *grammar_binding(GRAMMAR *gram, char *label) {
      char *noPackage = NULL;
      RULE *r = (RULE *)dict_get(gram->contents,label);
      if(r) {
-#ifdef DEBUG
-	  printf("%d: %s found\n", depth, label);
-#endif
-	  return r;
+	  return gram;
      }
      /* not found. try it without the package (if any) */
      noPackage = getLabel(label);
      if(noPackage) {
-#ifdef DEBUG
-	  printf("%d: %s not found, trying %s\n", depth, label, noPackage);
-#endif
 	  r = (RULE *)dict_get(gram->contents, noPackage);
      }
      if(r) {
-#ifdef DEBUG
-	  printf("%d: %s found\n", depth, noPackage);
-#endif
-	  return r;
+	  return gram;
      }
      /* not found. try the parent grammar */
      if(gram->parent) {
-#ifdef DEBUG
-	  printf("%d: %s not found, trying parent grammar\n",depth,label);
-#endif
-	  r = grammar_lookUp(gram->parent, label, depth-1);
+	  return grammar_binding(gram->parent, label);
      }
-     if(r) {
-	  return r;
+     /* OK, there really is no such binding. */
+     return NULL;
+}
+
+RULE *grammar_lookUp(GRAMMAR *gram, char *label) {
+     char *noPackage = NULL;
+     RULE *r = NULL;
+     gram = grammar_binding(gram, label);
+     if(gram) {
+	  r = (RULE *)dict_get(gram->contents, label);
+	  if(r) return r;
+	  noPackage = getLabel(label); /* this is redundant but that's no biggie */
+	  if(!noPackage) {
+	       /* this is fatal, because it's inconsistent with the
+		grammar_binding results in hand */
+	       fprintf(stderr,"binding disappeared for %s\n",label);
+	       exit(-1);
+	  }
+	  r = (RULE *)dict_get(gram->contents, noPackage);
+	  if(r) return r;
      }
-     /* OK, there really is no such rule. */
      return NULL;
 }
 
@@ -155,7 +176,7 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 		    printf("\n");
 	       }
 #endif
-	       r = grammar_lookUp(gram,g->l,stackDepth);
+	       r = grammar_lookUp(gram,g->l);
 	       if(r) {
 		    LIST *cs;
 		    LIST *c, *ex;
@@ -197,7 +218,7 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 		    onlyChoice = list_new();
 		    lit = literal_new(str);
 		    list_add(onlyChoice,lit);
-		    r = rule_new(rule_getLabel(g),NULL);
+		    r = rule_new(rule_getLabel(g),NULL,g->scope);
 		    rule_addChoice(r,onlyChoice);
 		    grammar_add(parentGram,r);
 		    free(str);

@@ -15,9 +15,13 @@
 #define USE_T        7 /* a namespace directive i.e. 'use "blah"' */
 #define TRANS_T      8 /* transformation i.e. "foo > /fish/duck/" */
 
+#define LEXICAL_SCOPE  0 /* local variable or rule (default) */
+#define DYNAMIC_SCOPE  1 /* non-local variable or rule */
+
 typedef struct _grambit {
      int type;      /* one of the type constants above */
      char *l;       /* label or literal */
+     int scope;     /* scope of rule/assignment */
      LIST *choices; /* choices (for choice, rule or assignment) */
      int min_x; /* minimum number of times (for label, literal, or choice) */
      int max_x; /* max      "     "   " ... */
@@ -34,8 +38,8 @@ typedef struct _grambit {
 extern void grambit_free(GRAMBIT *);
 extern GRAMBIT *literal_new(char *);
 extern GRAMBIT *label_new(char *);
-extern GRAMBIT *rule_new(char *, LIST *);
-extern GRAMBIT *assignment_new(char *, LIST *);
+extern GRAMBIT *rule_new(char *, LIST *, int);
+extern GRAMBIT *assignment_new(char *, LIST *, int);
 extern GRAMBIT *rxsub_new(char *, char *);
 extern GRAMBIT *mapping_new(char *, GRAMBIT *);
 extern GRAMBIT *choice_new(LIST *);
