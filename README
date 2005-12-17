@@ -13,9 +13,13 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.0
+2.1
 
 CHANGE HISTORY
+
+2.1
+
+* added -d flag for backward compatibility with 1.x dynamic rule scope
 
 2.0
 
