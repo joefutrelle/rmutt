@@ -19,12 +19,15 @@ char *topRule = NULL;
 
 int maxStackDepth = -1;
 
+int dynamic = 0;
+
 void usage() {
      fprintf(stderr,"usage: rmutt [-s] [-r seed] [-i iteration] [-e rule] [grammar]\n");
      fprintf(stderr,"       -s   max stack depth\n");
      fprintf(stderr,"       -r   random seed\n");
      fprintf(stderr,"       -i   iteration\n");
      fprintf(stderr,"       -e   rule to expand (default: first)\n");
+     fprintf(stderr,"       -d   dynamic variable scope (default: lexical)\n");
 }
 
 int main(int argc, char **argv) {
@@ -36,7 +39,7 @@ int main(int argc, char **argv) {
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "s:r:i:e:")) != EOF) {
+  while((c = getopt(argc, argv, "s:r:i:e:d")) != EOF) {
        switch(c) {
        case 's':
 	    /* maximum stack depth */
@@ -50,6 +53,9 @@ int main(int argc, char **argv) {
 	    break;
        case 'e':
 	    rte = strdup(optarg);
+	    break;
+       case 'd':
+	    dynamic++;
 	    break;
        default:
 	    usage();

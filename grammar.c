@@ -6,6 +6,7 @@
 #include "choose.h"
 
 extern int maxStackDepth;
+extern int dynamic;
 
 int stackDepth = 0;
 
@@ -126,9 +127,13 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 	  return result;
      }
 
-     /* create a new grammar stack frame */
-     gram = grammar_new();
-     gram->parent = parentGram;
+     if(dynamic) {
+	  gram = parentGram;
+     } else {
+	  /* create a new grammar stack frame */
+	  gram = grammar_new();
+	  gram->parent = parentGram;
+     }
 
      result = list_new();
 
@@ -215,8 +220,10 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 
      stackDepth--;
 
-     /* release the local frame */
-     grammar_free(gram);
+     if(!dynamic) {
+	  /* release the local frame */
+	  grammar_free(gram);
+     }
 
      return result;
 }
