@@ -35,9 +35,9 @@ s4: ; // halt state
 
 // set up the initial state of the tape
 init:
-[left = "0000"]       // portion of the tape to the left of the r/w head
-[head = "0"]          // symbol at the r/w head
-[right = "000000100"] // portion of the tape to the right of the r/w head
+[$left = "0000"]       // portion of the tape to the left of the r/w head
+[$head = "0"]          // symbol at the r/w head
+[$right = "000000100"] // portion of the tape to the right of the r/w head
 ;
 
 // produce text representation of tape and r/w head
@@ -48,21 +48,21 @@ left "[" head "]" right "\n"
 // move the r/w head one cell to the left
 L:
 [swap = head]
-[head = left > /.*(.)/\1/]
-[left = left > /(.*)./\1/]
-[right = swap right]
+[$head = left > /.*(.)/\1/]
+[$left = left > /(.*)./\1/]
+[$right = swap right]
 ;
 
 // move the r/w head one cell to the right
 R:
-[swap = head]
-[head = right > /(.).*/\1/]
-[right = right > /.(.*)/\1/]
-[left = left swap]
+[$swap = head]
+[$head = right > /(.).*/\1/]
+[$right = right > /.(.*)/\1/]
+[$left = left swap]
 ;
 
 // write a "0" at the r/w head
-w0: [head = "0"];
+w0: [$head = "0"];
 
 // write a "1" at the r/w head
-w1: [head = "1"];
+w1: [$head = "1"];

@@ -1,0 +1,10 @@
+#include "w710.rm"
+#include "chars.rm"
+
+graph: "digraph foo {\n" fs "}\n";
+fs: [directory=name] nodes;
+node: file ";\n" | dir;
+file: directory " -> " name;
+dir: directory " -> " [directory=name] directory ";\n" nodes;
+name: w710.noun_singular > /[^A-Za-z]/_/;
+nodes: node{0,3} & 5 | node{4};
