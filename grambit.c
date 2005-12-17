@@ -19,11 +19,15 @@ GRAMBIT *grambit_new(int t) {
   return g;
 }
 
+void choices_free(LIST *choices) {
+     list_freeData(choices, (Destructor)grambit_free);
+}
+
 /* destroy a grammatical bit */
 void grambit_free(GRAMBIT *g) {
   free(g->l);
   if(g->choices) {
-       list_freeData(g->choices, (Destructor)grambit_free);
+       list_freeData(g->choices, (Destructor)choices_free);
   }
   if(g->rx_rx) free(g->rx_rx);
   if(g->rx_rep) free(g->rx_rep);
@@ -123,19 +127,20 @@ void literal_append(GRAMBIT *g, char *suffix) {
 /* for debugging */
 void grambit_print(GRAMBIT *g, FILE *fp) {
   long i, j;
+  char *l = g->l ? g->l : "(null)";
   fprintf(fp, "[");
   switch(g->type) {
   case LABEL_T:
-    fprintf(fp, "label: %s]", g->l);
+    fprintf(fp, "label: %s]", l);
     return;
   case LITERAL_T:
-    fprintf(fp, "literal: \"%s\"]", g->l);
+    fprintf(fp, "literal: \"%s\"]", l);
     return;
   case RULE_T:
-    fprintf(fp, "rule: %s -> ", g->l);
+    fprintf(fp, "rule: %s -> ", l);
     break;
   case ASSIGNMENT_T:
-    fprintf(fp, "assignment: %s = ", g->l);
+    fprintf(fp, "assignment: %s = ", l);
     break;
   case CHOICE_T:
     fprintf(fp, "choice:");

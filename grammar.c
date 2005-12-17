@@ -18,11 +18,8 @@ GRAMMAR *grammar_new() {
 
 /* destroy a grammar */
 void grammar_free(GRAMMAR *g) {
-/*
-     dict_freeValues(g->contents, (Destructor)grambit_free);
+     dict_freeValues(g->contents,(Destructor)grambit_free);
      free(g);
-*/
-/* FIXME leaks */     
 }
 
 /*
@@ -132,9 +129,6 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
      /* create a new grammar stack frame */
      gram = grammar_new();
      gram->parent = parentGram;
-#ifdef DEBUG
-     printf("%d has parent %d\n",stackDepth,stackDepth-1);
-#endif
 
      result = list_new();
 
@@ -183,9 +177,6 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 	       break;
 	  case RULE_T:
 	       /* add the rule to the grammar */
-#ifdef DEBUG
-	       printf("%d: adding rule %s\n",stackDepth,rule_getLabel(g));
-#endif
 	       grammar_add(parentGram,g);
 	       break;
 	  case ASSIGNMENT_T:
@@ -194,19 +185,17 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 		  add it to the grammar */
 	       if(1) {
 		    RULE *r;
+		    GRAMBIT *lit;
 		    LIST *onlyChoice;
 		    char *str;
 		    str = grammar_produce(gram,choice_new(rule_getChoices(g)));
-		    /* FIXME: leaks the new choice */
-		    r = rule_new(rule_getLabel(g),NULL);
 		    onlyChoice = list_new();
-		    list_add(onlyChoice,literal_new(str));
-		    free(str);
+		    lit = literal_new(str);
+		    list_add(onlyChoice,lit);
+		    r = rule_new(rule_getLabel(g),NULL);
 		    rule_addChoice(r,onlyChoice);
-#ifdef DEBUG
-		    printf("%d: adding rule %s\n",stackDepth,rule_getLabel(r));
-#endif
 		    grammar_add(parentGram,r);
+		    free(str);
 	       }
 	       break;
 	  case CHOICE_T:
