@@ -74,6 +74,10 @@ use { return(USE); }
      BEGIN(INITIAL);
      return(RXSUB);
 }
+<SUB2>\\n { gstr_appendc(replace,'\n'); }
+<SUB2>\\t { gstr_appendc(replace,'\t'); }
+<SUB2>\\\" { gstr_appendc(replace,'\"'); }
+<SUB2>\\\\ { gstr_appendc(replace,'\\'); }
 <SUB2>. { gstr_append(replace,yytext); }
 
 {white}         { }

@@ -7,6 +7,8 @@
 #include "list.h"
 #include "gstr.h"
 
+#define MARKER "FOOBAR"
+
 char *rx_interpolate(char *orig, char *replace_o, regmatch_t *match) {
      char key[5];
      int i;
@@ -21,7 +23,7 @@ char *rx_interpolate(char *orig, char *replace_o, regmatch_t *match) {
 	  gstr_append(rep_gs,"");
 	  rep = gstr_detach(rep_gs);
 	  sprintf(key,"\\\\%d",i);
-	  /* now replace \n with whatever in "replace" */
+	  /* now replace \(digit) with whatever in "replace" */
 	  ns = regsub(replace,key,rep,0);
 	  free(replace);
 	  replace = ns;

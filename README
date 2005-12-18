@@ -17,6 +17,10 @@ VERSION
 
 CHANGE HISTORY
 
+2.3
+
+* added ability to use \n and \t in regex replacements
+
 2.2.1
 
 * fixed memory management bug in support for lexical scope
