@@ -5,7 +5,11 @@ package sentence;
 
 line: s "\n";
 
-s: np > util.xcap " " w710.verb_trans_past " " np ".";
+s: snp > util.xcap " " w710.verb_trans_past " " onp ".";
+snp: np | spn;
+spn: "I"|"you"|"we"|"he"|"she"|"they";
+onp: np | opn;
+opn: "me"|"you"|"us"|"her"|"him"|"them";
 np: (art " " w710.adv) > util.xan " " w710.adj " " w710.noun_singular |
     (art " " w710.adj) > util.xan " " w710.noun_singular |
     (art " " w710.noun_singular) > util.xan;
