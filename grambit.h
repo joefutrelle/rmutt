@@ -35,6 +35,7 @@ typedef struct _grambit {
 #define RULE GRAMBIT
 #define ASSIGNMENT GRAMBIT
 
+extern GRAMBIT *grambit_copy(GRAMBIT *);
 extern void grambit_free(GRAMBIT *);
 extern GRAMBIT *literal_new(char *);
 extern GRAMBIT *label_new(char *);

@@ -13,9 +13,13 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.2
+2.2.1
 
 CHANGE HISTORY
+
+2.2.1
+
+* fixed memory management bug in support for lexical scope
 
 2.2
 

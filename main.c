@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
   result = grammar_produce(grammar,t);
   printf("%s",result);
   free(result);
-  grambit_free(t);
+  /*grambit_free(t);*/
 
   /*
   for(i = 0; i < list_length(grammar); i++) {

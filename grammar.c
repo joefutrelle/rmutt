@@ -22,7 +22,7 @@ GRAMMAR *grammar_new() {
 /* destroy a grammar */
 void grammar_free(GRAMMAR *g) {
      dict_freeValues(g->contents,(Destructor)grambit_free);
-     free(g);
+     free(g); 
 }
 
 /*
@@ -32,9 +32,6 @@ static char *getLabel(char *packagedLabel);
 
 void grammar_add(GRAMMAR *g, RULE *r) {
      char *label = rule_getLabel(r);
-#ifdef DEBUG
-     fprintf(stderr,"adding rule: %s\n",label);
-#endif
      /* if the scope is lexical, add to this grammar */
      if(r->scope == LEXICAL_SCOPE) {
 	  dict_put(g->contents,label,r);
@@ -107,7 +104,9 @@ GRAMMAR *grammar_binding(GRAMMAR *gram, char *label) {
 RULE *grammar_lookUp(GRAMMAR *gram, char *label) {
      char *noPackage = NULL;
      RULE *r = NULL;
-     gram = grammar_binding(gram, label);
+     if(!dynamic) {
+	  gram = grammar_binding(gram, label);
+     }
      if(gram) {
 	  r = (RULE *)dict_get(gram->contents, label);
 	  if(r) return r;
@@ -202,8 +201,8 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 	       }
 	       break;
 	  case RULE_T:
-	       /* add the rule to the grammar */
-	       grammar_add(parentGram,g);
+	       /* copy the rule to the grammar */
+	       grammar_add(parentGram,grambit_copy(g));
 	       break;
 	  case ASSIGNMENT_T:
 	       /* produce the rhs, and then create a new literal
@@ -213,15 +212,21 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 		    RULE *r;
 		    GRAMBIT *lit;
 		    LIST *onlyChoice;
+		    LIST *choices;
 		    char *str;
+		    /* first, produce the rhs */
 		    str = grammar_produce(gram,choice_new(rule_getChoices(g)));
+		    /* now create a single term and single choice */
 		    onlyChoice = list_new();
 		    lit = literal_new(str);
-		    list_add(onlyChoice,lit);
-		    r = rule_new(rule_getLabel(g),NULL,g->scope);
-		    rule_addChoice(r,onlyChoice);
-		    grammar_add(parentGram,r);
 		    free(str);
+		    list_add(onlyChoice,lit);
+		    choices = list_new();
+		    list_add(choices,onlyChoice);
+		    /* make that the rhs of a new rule */
+		    r = rule_new(rule_getLabel(g),choices,g->scope);
+		    /* add the rule to the grammar */
+		    grammar_add(parentGram,r);
 	       }
 	       break;
 	  case CHOICE_T:
@@ -327,3 +332,4 @@ char *transform(GRAMMAR *gram, char *str, GRAMBIT *trans) {
      fprintf(stderr,"error: illegal transformation\n");
      return NULL;
 }
+

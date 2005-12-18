@@ -20,20 +20,21 @@ GRAMBIT *grambit_new(int t) {
 }
 
 void choices_free(LIST *choices) {
+     /* each choice is a list of terms, i.e. grambits */
      list_freeData(choices, (Destructor)grambit_free);
 }
 
 /* destroy a grammatical bit */
 void grambit_free(GRAMBIT *g) {
-  free(g->l);
-  if(g->choices) {
-       list_freeData(g->choices, (Destructor)choices_free);
-  }
-  if(g->rx_rx) free(g->rx_rx);
-  if(g->rx_rep) free(g->rx_rep);
-  if(g->source) grambit_free(g->source);
-  if(g->trans) grambit_free(g->trans);
-  free(g);
+     free(g->l);
+     if(g->choices) {
+	  list_freeData(g->choices, (Destructor)choices_free);
+     }
+     if(g->rx_rx) free(g->rx_rx);
+     if(g->rx_rep) free(g->rx_rep);
+     if(g->source) grambit_free(g->source);
+     if(g->trans) grambit_free(g->trans);
+     free(g);
 }
 
 /* create a new literal */
@@ -65,6 +66,33 @@ GRAMBIT *rule_new(char *label, LIST *choices, int scope) {
   }
   ng->scope = scope;
   return ng;
+}
+
+/* copy the given grambit */
+GRAMBIT *grambit_copy(GRAMBIT *g) {
+     int i,j;
+     GRAMBIT *ng = grambit_new(g->type);
+     ng->scope = g->scope;
+     if(g->l) {
+	  ng->l = strdup(g->l);
+     }
+     if(g->choices) {
+	  for(i = 0; i < list_length(g->choices); i++) {
+	       LIST *cs = (LIST *)list_get(g->choices,i);
+	       LIST *nc = list_new();
+	       for(j = 0; j < list_length(cs); j++) {
+		    list_add(nc, grambit_copy((GRAMBIT *)list_get(cs, j)));
+	       }
+	       list_add(ng->choices, nc);
+	  }
+     }
+     ng->min_x = g->min_x;
+     ng->max_x = g->max_x;
+     if(g->rx_rx) { ng->rx_rx = strdup(g->rx_rx); }
+     if(g->rx_rep) { ng->rx_rep = strdup(g->rx_rep); }
+     if(g->source) { ng->source = grambit_copy(g->source); }
+     if(g->trans) { ng->trans = grambit_copy(g->trans); }
+     return ng;
 }
 
 /* create a new assignment with the given label and choices.
