@@ -20,6 +20,7 @@ CHANGE HISTORY
 2.3
 
 * added ability to use \n and \t in regex replacements
+* added line number error reporting within #included files
 
 2.2.1
 
