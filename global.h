@@ -1,1 +1,3 @@
-extern int g_lineNumber;
+extern int includeStackPtr;
+extern int g_lineNumber[];
+extern char *g_fileName[];

@@ -14,8 +14,6 @@
   extern GRAMMAR *grammar;
   extern char *topRule;
 
-  extern int includeStackPtr;
-
   char *curPack = NULL;
 
   %}
@@ -288,6 +286,10 @@ Namespace:
 %%
 
 int yyerror(char *s) {
-  fprintf(stderr,"error on line %d: %s\n",g_lineNumber,s);
+     if(includeStackPtr) {
+	  fprintf(stderr,"error on line %d of %s: %s\n",g_lineNumber[includeStackPtr],g_fileName[includeStackPtr],s);
+     } else {
+	  fprintf(stderr,"error on line %d: %s\n",g_lineNumber[0],s);
+     }
   return 0;
 }

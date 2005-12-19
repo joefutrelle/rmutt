@@ -12,8 +12,6 @@ GSTR *rx;
 GSTR *replace;
 char *includeFile;
 
-int g_lineNumber;
-
 /* this is used to support older versions of flex (e.g., 2.5.4)
    that do not have %option reentrant */
 #define YY_DECL int yylex (YYSTYPE *lvalp)
@@ -21,6 +19,9 @@ int g_lineNumber;
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 int includeStackPtr = 0;
+
+int g_lineNumber[MAX_INCLUDE_DEPTH];
+char *g_fileName[MAX_INCLUDE_DEPTH];
 
 %}
 
@@ -42,7 +43,10 @@ package { return(PACKAGE); }
 use { return(USE); }
 
 \/\/ { BEGIN(COMMENT); }
-<COMMENT>\n { g_lineNumber++; BEGIN(INITIAL); }
+<COMMENT>\n {
+     g_lineNumber[includeStackPtr]++;
+     BEGIN(INITIAL);
+}
 <COMMENT>. { }
 
 \" { string = gstr_new(""); BEGIN(STR); }
@@ -68,7 +72,12 @@ use { return(USE); }
      replace = gstr_new("");
      BEGIN(SUB2);
 }
+<SUB1>\\n { gstr_appendc(rx,'\n'); }
+<SUB1>\\t { gstr_appendc(rx,'\t'); }
+<SUB1>\\\" { gstr_appendc(rx,'\"'); }
+<SUB1>\\\\ { gstr_appendc(rx,'\\'); }
 <SUB1>. { gstr_append(rx,yytext); }
+
 <SUB2>\/ {
      lvalp->rx.rep = gstr_detach(replace);
      BEGIN(INITIAL);
@@ -81,7 +90,9 @@ use { return(USE); }
 <SUB2>. { gstr_append(replace,yytext); }
 
 {white}         { }
-{newline} { g_lineNumber++; }
+{newline} {
+     g_lineNumber[includeStackPtr]++;
+}
 
 {label} {
      lvalp->str = strdup(yytext);
@@ -94,8 +105,7 @@ use { return(USE); }
 }
 
 {special} {
-     return(yytext[0]);
-}
+     return(yytext[0]);}
 
 \#include[ \t]+\" {
      BEGIN(INCLUDE);
@@ -107,6 +117,8 @@ use { return(USE); }
 
 <INCLUDE>\"[ \t]*\n {
      FILE *f;
+
+     g_lineNumber[includeStackPtr]++; /* the #include line counts as a line in this file */
 
      if ( includeStackPtr >= MAX_INCLUDE_DEPTH )
      {
@@ -124,25 +136,26 @@ use { return(USE); }
 	     include_stack[includeStackPtr++] =
 		  YY_CURRENT_BUFFER;
 
+	     g_lineNumber[includeStackPtr] = 0;
+	     g_fileName[includeStackPtr] = includeFile;
+
 	     yy_switch_to_buffer(
 		  yy_create_buffer( yyin, YY_BUF_SIZE ) );
 	}
 
-	free(includeFile);
+	/* free(includeFile); */
 
 	BEGIN(INITIAL);
 }
 
 <<EOF>> {
-        if ( --includeStackPtr < 0 )
-            {
-            yyterminate();
-            }
-
-        else
-            {
-            yy_delete_buffer( YY_CURRENT_BUFFER );
-            yy_switch_to_buffer(
-                 include_stack[includeStackPtr] );
-            }
+     if ( !includeStackPtr ) {
+	  yyterminate();
+     } else {
+	  yy_delete_buffer( YY_CURRENT_BUFFER );
+	  free(g_fileName[includeStackPtr]);
+	  includeStackPtr--;
+	  yy_switch_to_buffer(
+	       include_stack[includeStackPtr] );
+     }
 }
