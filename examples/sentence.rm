@@ -1,17 +1,59 @@
-#include "w710.rm"
+#include "eng.rm"
 #include "util.rm"
 
 package sentence;
 
 line: s "\n";
 
-s: snp > util.xcap " " w710.verb_trans_past " " onp ".";
-snp: np | spn;
-spn: "I"|"you"|"we"|"he"|"she"|"they";
-onp: np | opn;
-opn: "me"|"you"|"us"|"her"|"him"|"them";
-np: (art " " w710.adv) > util.xan " " w710.adj " " w710.noun_singular |
-    (art " " w710.adj) > util.xan " " w710.noun_singular |
-    (art " " w710.noun_singular) > util.xan;
-art: "a"|"the";
+s: subject > util.xcap " " eng.verb_trans_past " " object ".";
+subject: [sense="subject"] np;
+object: [sense="object"] np;
+np:
+  [person="1"|"2"|"3"]
+  [number="singular"|"plural"]
+  [animate="y"|"n"]
+  n;
+n: animate >(
+  "y" % actor,
+  "n" % thing
+);
+thing: number >(
+  "singular" % ([noun=eng.noun_singular] qualifiedNoun),
+  "plural" % ([noun=eng.noun_plural] qualifiedNoun)
+);
+actor: number >(
+  "singular" % (eng.noun_name | pronoun),
+  "plural" % (pronoun)
+);
+pronoun: sense >(
+  "subject" % (number >(
+    "singular" % (person >(
+      "1" % "I",
+      "2" % "you",
+      "3" % ("he"|"she"))
+    ) "plural" % (person >(
+      "1" % "we",
+      "2" % "you",
+      "3" % "they")
+    ))
+  ) "object" % (number >(
+    "singular" % (person >(
+      "1" % "me",
+      "2" % "you",
+      "3" % ("her"|"him"))
+    ) "plural" % (person >(
+      "1" % "us",
+      "2" % "you",
+      "3" % "them")
+    ))
+  )
+);
+qualifiedNoun:
+    (art " " eng.adv) > util.xan " " eng.adj " " noun |
+    (art " " eng.adj) > util.xan " " noun |
+    (art " " noun) > util.xan;
+art: number >(
+  "singular" % ("a"|"the"),
+  "plural" % "the"
+);
 

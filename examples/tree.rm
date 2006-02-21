@@ -1,9 +1,9 @@
-#include "w710.rm"
+#include "eng.rm"
 #include "chars.rm"
 
 fs: [directory=""] nodes;
 node: file "\n" | dir;
 file: directory "/" name "." chars.lc{3};
 dir: [directory=(directory "/" name)] directory "/\n" nodes;
-name: w710.noun_singular > /[^A-Za-z]/_/;
+name: eng.noun_singular > /[^A-Za-z]/_/;
 nodes: node{0,3} & 5 | node{4};
