@@ -1,2 +1,2 @@
 // probability multipliers
-a: "0" & 3 | "1";
+a: "0" 3, "1";

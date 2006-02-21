@@ -1,2 +1,2 @@
 // complex mapping syntax
-a: ("a"|"b")>("a"%("0"|"zero"),"b"%("1"|"one"));
+a: ("a","b")>("a"%("0","zero") "b"%("1","one"));

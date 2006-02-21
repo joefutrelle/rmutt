@@ -137,24 +137,24 @@ Choices:
 	list_add(choices,$1);
 	$$=choices;
    }
-   | Choice '&' INTEGER {
+   | Choice INTEGER {
 	LIST *choices=list_new();
 	{
 	     int i;
-	     for(i = 0; i < $3; i++) {
+	     for(i = 0; i < $2; i++) {
 		  list_add(choices,$1);
 	     }
 	}
 	$$=choices;
    }
-   | Choices '|' Choice {
+   | Choices ',' Choice {
 	list_add($1,$3);
 	$$=$1;
    }
-   | Choices '|' Choice '&' INTEGER {
+   | Choices ',' Choice INTEGER {
 	{
 	     int i;
-	     for(i = 0; i < $5; i++) {
+	     for(i = 0; i < $4; i++) {
 		  list_add($1,$3);
 	     }
 	}
@@ -179,10 +179,6 @@ Terms:
    }
    | Terms QualifiedTerm {
 	list_add($1,$2);
-	$$=$1;
-   }
-   | Terms ',' QualifiedTerm {
-	list_add($1,$3);
 	$$=$1;
    }
    ;
@@ -230,7 +226,7 @@ Term:
      $$=literal_new($1);
      free($1);
    }
-   | '[' Rule ']' {
+   | '(' Rule ')' {
      $$=$2;
    }
    | '(' Choices ')' {
@@ -287,9 +283,9 @@ Namespace:
 
 int yyerror(char *s) {
      if(includeStackPtr) {
-	  fprintf(stderr,"error on line %d of %s: %s\n",g_lineNumber[includeStackPtr],g_fileName[includeStackPtr],s);
+	  fprintf(stderr,"error on line %d of %s: %s\n",g_lineNumber[includeStackPtr]+1,g_fileName[includeStackPtr],s);
      } else {
-	  fprintf(stderr,"error on line %d: %s\n",g_lineNumber[0],s);
+	  fprintf(stderr,"error on line %d: %s\n",g_lineNumber[0]+1,s);
      }
   return 0;
 }

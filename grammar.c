@@ -197,7 +197,8 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 #endif		    
 		    list_appendAndFree(result,ex);
 	       } else {
-		    fprintf(stderr,"error: rule %s not found\n",g->l);
+		    /* rule not found; produce the rule name */
+		    list_add(result,literal_new(g->l));
 	       }
 	       break;
 	  case RULE_T:
