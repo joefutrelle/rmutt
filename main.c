@@ -6,10 +6,10 @@
 #include "grambit.h"
 #include "grammar.h"
 #include "choose.h"
-
 #include "gstr.h"
-
 #include "rxutil.h"
+
+#define RMUTT_VERSION "2.3.0"
 
 extern int yyparse(void);
 extern FILE *yyin;
@@ -30,6 +30,10 @@ void usage() {
      fprintf(stderr,"       -d   dynamic variable scope (default: lexical)\n");
 }
 
+void version() {
+     fprintf(stderr,"rmutt version %s\n",RMUTT_VERSION);
+}
+
 int main(int argc, char **argv) {
   GRAMBIT *t;
   char *result;
@@ -39,8 +43,11 @@ int main(int argc, char **argv) {
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "s:r:i:e:d")) != EOF) {
+  while((c = getopt(argc, argv, "vs:r:i:e:d")) != EOF) {
        switch(c) {
+       case 'v':
+	    version();
+	    exit(1);
        case 's':
 	    /* maximum stack depth */
 	    maxStackDepth = atoi(optarg);

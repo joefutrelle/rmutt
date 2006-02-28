@@ -1,3 +1,4 @@
-* revise syntax
+* revise syntax more
+* bug: bareword support works for *,+,and? but not {n,m}
 
 

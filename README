@@ -13,12 +13,13 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.2.1
+2.3.0
 
 CHANGE HISTORY
 
-2.3
+2.3.0
 
+* major syntax changes ("()" instead of "[]", "," instead of "|", no more "&")
 * added ability to use \n and \t in regex replacements
 * added line number error reporting within #included files
 
