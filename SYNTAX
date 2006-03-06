@@ -1,5 +1,5 @@
-# this is an informal BNF of the syntax for rmutt. consult dada.lex
-# and dada.y for the exact syntax.
+# this is an informal BNF of the syntax for rmutt. consult rmutt.lex
+# and rmutt.y for the exact syntax.
 
 grammar ::= (statement | include)*;
 

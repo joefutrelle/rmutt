@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
   }
 
   if(!topRule) {
-       fprintf(stderr,"dada error: empty grammar\n");
+       fprintf(stderr,"rmutt error: empty grammar\n");
        exit(-1);
   }
   if(rte) {

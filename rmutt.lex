@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "global.h"
-#include "dada.tab.h"
+#include "rmutt.tab.h"
 #include "gstr.h"
 
 GSTR *string;

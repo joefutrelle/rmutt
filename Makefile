@@ -7,7 +7,7 @@ CC = gcc
 CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\"
 # -DDEBUG
 
-OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
+OBJ = lex.yy.o rmutt.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
 EXE = rmutt
 
 LIB_DIR = 
@@ -19,19 +19,19 @@ LIBS = -lfl
 all: $(OBJ) $(EXE)
 
 clean:
-	rm -rf *.o lex.yy.c dada.tab.c dada.tab.h dada.c core *~ $(EXE)
+	rm -rf *.o lex.yy.c rmutt.tab.c rmutt.tab.h core *~ $(EXE)
 
 pure: $(EXE) $(OBJ)
 	purify $(CC) $(OBJ) -o $(EXE) $(LIB_DIR) $(LIBS)
 
-$(EXE): $(OBJ) lex.yy.c dada.tab.c
+$(EXE): $(OBJ) lex.yy.c rmutt.tab.c
 	$(CC) $(OBJ) -o $(EXE) $(LIB_DIR) $(LIBS)
 
-lex.yy.c: dada.lex dada.tab.c
-	flex dada.lex
+lex.yy.c: rmutt.lex rmutt.tab.c
+	flex rmutt.lex
 
-dada.tab.c: dada.y
-	bison -d dada.y
+rmutt.tab.c: rmutt.y
+	bison -d rmutt.y
 
 test: $(EXE)
 	(cd test; sh runtests.sh)
