@@ -28,11 +28,11 @@ void usage() {
      fprintf(stderr,"       -i   iteration\n");
      fprintf(stderr,"       -e   rule to expand (default: first)\n");
      fprintf(stderr,"       -d   dynamic variable scope (default: lexical)\n");
+     fprintf(stderr,"       -v   print version number and exit\n");
 }
 
 void version() {
      fprintf(stderr,"rmutt version %s\n",RMUTT_VERSION);
-     fprintf(stderr,"include location = %s\n", RMUTT_INCLUDE);
 }
 
 int main(int argc, char **argv) {
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
        t = label_new(topRule);
   }
   result = grammar_produce(grammar,t);
-  printf("%s",result);
+  fputs(result,stdout);
   free(result);
   grambit_free(t);
 

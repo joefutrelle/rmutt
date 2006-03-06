@@ -66,19 +66,3 @@ void *list_getRand(LIST *l) {
      i = random() % list_length(l);
      return list_get(l,i);
 }
-
-/*
-main() {
-     LIST *l = list_new();
-     LIST_NODE *n;
-     list_add(l, (void *)strdup("foo"));
-     list_add(l, (void *)strdup("bar"));
-     n = list_first(l);
-     while(n) {
-	  printf("%s\n", (char *)listNode_getData(n));
-	  n = listNode_next(n);
-     }
-     list_freeData(l,free);
-     list_free(l);
-}
-*/

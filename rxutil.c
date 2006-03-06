@@ -7,8 +7,6 @@
 #include "list.h"
 #include "gstr.h"
 
-#define MARKER "FOOBAR"
-
 char *rx_interpolate(char *orig, char *replace_o, regmatch_t *match) {
      char key[5];
      int i;

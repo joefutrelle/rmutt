@@ -17,6 +17,7 @@ char *includeFile;
 #define YY_DECL int yylex (YYSTYPE *lvalp)
 
 #define MAX_INCLUDE_DEPTH 10
+
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 int includeStackPtr = 0;
 

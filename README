@@ -27,6 +27,7 @@ CHANGE HISTORY
 * fixed lexical scoping issues with packages and #includes:
 ** "package" statements in #included files no longer affect including file
 ** line number error reporting is now unaffected by #includes
+* if a rule is not found, will now issue a warning, output the label, and continue
 
 2.2.1
 

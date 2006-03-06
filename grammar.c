@@ -25,9 +25,6 @@ void grammar_free(GRAMMAR *g) {
      free(g); 
 }
 
-/*
-static char *getPackage(char *packagedLabel);
-*/
 static char *getLabel(char *packagedLabel);
 
 void grammar_add(GRAMMAR *g, RULE *r) {
@@ -46,23 +43,6 @@ void grammar_add(GRAMMAR *g, RULE *r) {
 	  dict_put(frame->contents,label,r);
      }
 }
-
-/*
-static char *getPackage(char *packagedLabel) {
-     int i;
-     char *p;
-     for(p = packagedLabel, i = 0; *p && *p != '.'; p++, i++)
-	  ;
-     if(*p) {
-	  GSTR *g = gstr_new("");
-	  gstr_appendn(g, packagedLabel, i);
-	  gstr_appendc(g,'\0');
-	  return gstr_detach(g);
-     } else {
-	  return gstr_detach(gstr_new(""));
-     }
-}
-*/
 
 static char *getLabel(char *packagedLabel) {
      int i;
@@ -198,6 +178,7 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 		    list_appendAndFree(result,ex);
 	       } else {
 		    /* rule not found; produce the rule name */
+		    fprintf(stderr,"rmutt: warning: rule not found: %s\n",g->l);
 		    list_add(result,literal_new(g->l));
 	       }
 	       break;
