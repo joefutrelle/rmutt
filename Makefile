@@ -1,8 +1,12 @@
+# edit the following line if you want to put rmutt elsewhere. the
+# binary will be installed in $PREFIX/bin and the included .rm files
+# will be installed in $PREFIX/share/rmutt
 PREFIX=/usr/local
+
 CC = gcc
 CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\"
-
 # -DDEBUG
+
 OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
 EXE = rmutt
 

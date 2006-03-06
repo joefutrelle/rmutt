@@ -27,15 +27,20 @@ directory:
 	cd rmutt
 
 Now edit the Makefile; inside the Makefile are instructions for how to
-modify it to work under Cygwin.  For UNIX variants other than Linux,
-you're on your own.  Once you've edited the Makefile, run the
+modify it. Note especially that you may want to modify PREFIX, which
+by default is /usr/local. Once you've edited the Makefile, run the
 following command:
 
 	make
 
 If there are no problems, the directory should now contain an rmutt
-executable which you can copy anywhere you want.  Right now there are
-no tests for rmutt but they will be included in a later release.
+executable. To test rmutt, run the following command:
+
+	make test
+
+If this succeeds, you can install rmutt and its supporting files using
+"make install". Note that you must have appropriate permissions to
+the PREFIX directory.
 
 USING RMUTT
 
