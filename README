@@ -21,7 +21,12 @@ CHANGE HISTORY
 
 * major syntax changes ("()" instead of "[]", "," instead of "|", no more "&")
 * added ability to use \n and \t in regex replacements
-* added line number error reporting within #included files
+* added PREFIX variable to Makefile:
+** will install binary to $PREFIX/bin and included .rm files to $PREFIX/share/rmutt
+** will search for #includes in $PREFIX/share/rmutt
+* fixed lexical scoping issues with packages and #includes:
+** "package" statements in #included files no longer affect including file
+** line number error reporting is now unaffected by #includes
 
 2.2.1
 

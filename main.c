@@ -32,6 +32,7 @@ void usage() {
 
 void version() {
      fprintf(stderr,"rmutt version %s\n",RMUTT_VERSION);
+     fprintf(stderr,"include location = %s\n", RMUTT_INCLUDE);
 }
 
 int main(int argc, char **argv) {

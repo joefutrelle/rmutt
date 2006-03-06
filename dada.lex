@@ -22,6 +22,7 @@ int includeStackPtr = 0;
 
 int g_lineNumber[MAX_INCLUDE_DEPTH];
 char *g_fileName[MAX_INCLUDE_DEPTH];
+char *g_package[MAX_INCLUDE_DEPTH];
 
 %}
 
@@ -117,6 +118,7 @@ use { return(USE); }
 
 <INCLUDE>\"[ \t]*\n {
      FILE *f;
+     char *sharedPath;
 
      g_lineNumber[includeStackPtr]++; /* the #include line counts as a line in this file */
 
@@ -127,6 +129,13 @@ use { return(USE); }
      }
 
         f = fopen( includeFile, "r" );
+
+	if(!f) { /* not found locally. try shared location */
+	     sharedPath = (char *)malloc(strlen(includeFile) + strlen(RMUTT_INCLUDE) + 1);
+	     sprintf(sharedPath, "%s/%s", RMUTT_INCLUDE, includeFile);
+	     f = fopen(sharedPath, "r");
+	     free(sharedPath);
+	}
 
         if ( ! f ) {
 	     fprintf(stderr, "warning: include file not found: %s\n", includeFile);

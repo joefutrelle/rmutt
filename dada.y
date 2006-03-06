@@ -11,12 +11,12 @@
 #include "grammar.h"
 #include "gstr.h"
 
-  extern GRAMMAR *grammar;
-  extern char *topRule;
+extern GRAMMAR *grammar;
+extern char *topRule;
 
-  char *curPack = NULL;
+#define CURRENT_PACKAGE g_package[includeStackPtr]
 
-  %}
+%}
 
 %union {
   struct _grambit *grambit;
@@ -59,6 +59,7 @@
 Top:
   Grammar {
     grammar = (GRAMMAR *) $1;
+    CURRENT_PACKAGE = NULL;
   };
 
 Grammar:
@@ -88,8 +89,10 @@ Statement:
 #ifdef DEBUG
        printf("setting package to %s\n", $2);
 #endif
-       if(curPack) free(curPack);
-       curPack = strdup($2);
+       if(CURRENT_PACKAGE) {
+	    free(CURRENT_PACKAGE);
+       }
+       CURRENT_PACKAGE = strdup($2);
        free($2);
        $$=NULL;
   }
@@ -245,10 +248,10 @@ Term:
 
 PackagedLabel:
    LABEL {
-	if(curPack) {
+	if(CURRENT_PACKAGE) {
 	     char *dotLabel;
 	     dotLabel = gstr_cat(".",$1);
-	     $$ = gstr_cat(curPack,dotLabel);
+	     $$ = gstr_cat(CURRENT_PACKAGE,dotLabel);
 	     free(dotLabel);
 	     free($1);
 	} else {

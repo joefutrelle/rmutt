@@ -1,5 +1,7 @@
+PREFIX=/usr/local
 CC = gcc
-CFLAGS = -g -Wall -pedantic
+CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\"
+
 # -DDEBUG
 OBJ = lex.yy.o dada.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
 EXE = rmutt
@@ -31,4 +33,6 @@ test: $(EXE)
 	(cd test; sh runtests.sh)
 
 install: $(EXE)
-	cp $(EXE) /usr/local/bin/$(EXE)
+	cp $(EXE) $(PREFIX)/bin/$(EXE)
+	mkdir -p $(PREFIX)/share/rmutt
+	cp examples/*.rm $(PREFIX)/share/rmutt

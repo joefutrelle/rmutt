@@ -15,17 +15,19 @@ definition ::= name ":" choices;
 
 assignment ::= name "=" choices;
 
-choices ::= choice | choices "|" choice;
+choices ::= choice | choices "," choice;
 
-choice ::= terms | ;
+choice ::= terms [probability-multiplier] | ;
 
-terms ::= qualified-term | terms [","] qualified-term;
+probability-multiplier ::= integer ;
+
+terms ::= qualified-term | terms qualified-term;
 
 qualified-term ::= term | qualified-term repetition-qualifier | qualified-term ">" term;
 
 repetition-qualifier ::= "{" [min ","] max "}"  | "*" | "+" | ";";
 
-term ::= packaged-label | literal | "[" rule "]" | rx-sub | mapping;
+term ::= packaged-label | literal | "(" rule ")" | rx-sub | mapping;
 
 mapping ::= literal "=" literal;
 
