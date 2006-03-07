@@ -19,6 +19,6 @@ attr:
  " " name "=\"" name "\"" 5,
  " xmlns:" name "=\"" url.url "#" name "\"";
 
-node: (indent=(indent "  ")) (tag , indent text);
+node: (indent=(indent "  ")) (tag, indent text);
 
 text: sentence.s;

@@ -22,7 +22,7 @@ thing: number >(
   "plural" % ((noun=eng.noun_plural) qualifiedNoun)
 );
 actor: number >(
-  "singular" % (eng.noun_name , pronoun)
+  "singular" % (eng.noun_name, pronoun)
   "plural" % (pronoun)
 );
 pronoun: sense >(
