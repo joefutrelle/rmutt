@@ -61,9 +61,17 @@ static char *getLabel(char *packagedLabel) {
 /* walk the grammar stack to find the grammar with a binding for the given label */
 GRAMMAR *grammar_binding(GRAMMAR *gram, char *label) {
      char *noPackage = NULL;
+     GRAMMAR *frame = NULL;
      RULE *r = (RULE *)dict_get(gram->contents,label);
      if(r) {
 	  return gram;
+     }
+     /* not found. try the parent grammar */
+     if(gram->parent) {
+	  frame = grammar_binding(gram->parent, label);
+     }
+     if(frame) {
+	  return frame;
      }
      /* not found. try it without the package (if any) */
      noPackage = getLabel(label);
@@ -72,10 +80,6 @@ GRAMMAR *grammar_binding(GRAMMAR *gram, char *label) {
      }
      if(r) {
 	  return gram;
-     }
-     /* not found. try the parent grammar */
-     if(gram->parent) {
-	  return grammar_binding(gram->parent, label);
      }
      /* OK, there really is no such binding. */
      return NULL;

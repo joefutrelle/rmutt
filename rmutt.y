@@ -103,6 +103,7 @@ Rule:
      GRAMBIT *nr;
 
      nr = rule_new($1, $3, LEXICAL_SCOPE);
+
      free($1);
 
      $$=nr;
@@ -111,6 +112,7 @@ Rule:
      GRAMBIT *na;
 
      na = assignment_new($1, $3, LEXICAL_SCOPE);
+
      free($1);
 
      $$=na;
