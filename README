@@ -28,6 +28,7 @@ CHANGE HISTORY
 ** "package" statements in #included files no longer affect including file
 ** line number error reporting is now unaffected by #includes
 * if a rule is not found, will now issue a warning, output the label, and continue
+* fixed bug affecting scope of package-qualified terms
 
 2.2.1
 
