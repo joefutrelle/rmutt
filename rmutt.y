@@ -156,7 +156,20 @@ Choices:
 	list_add($1,$3);
 	$$=$1;
    }
+   | Choices '|' Choice {
+	list_add($1,$3);
+	$$=$1;
+   }
    | Choices ',' Choice INTEGER {
+	{
+	     int i;
+	     for(i = 0; i < $4; i++) {
+		  list_add($1,$3);
+	     }
+	}
+	$$=$1;
+   }
+   | Choices '|' Choice INTEGER {
 	{
 	     int i;
 	     for(i = 0; i < $4; i++) {

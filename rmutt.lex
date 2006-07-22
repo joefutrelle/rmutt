@@ -107,7 +107,8 @@ use { return(USE); }
 }
 
 {special} {
-     return(yytext[0]);}
+     return(yytext[0]);
+}
 
 \#include[ \t]+\" {
      BEGIN(INCLUDE);
