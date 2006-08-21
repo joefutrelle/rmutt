@@ -1,4 +1,4 @@
 // scope qualifiers
 r:
-((a="foo") a ($b="bar")) b " "
-((c:"foo","bar") c ($d:"baz","quux") d) d "\n";
+{{a="foo"} a {$b="bar"}} b " "
+{{c:"foo","bar"} c {$d:"baz","quux"} d} d "\n";

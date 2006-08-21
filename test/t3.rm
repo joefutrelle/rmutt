@@ -1,2 +1,2 @@
 // anonymous rules
-t: "a" ("b","c") "d";
+t: "a" {"b","c"} "d";
