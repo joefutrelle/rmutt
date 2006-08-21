@@ -9,7 +9,7 @@
 #include "gstr.h"
 #include "rxutil.h"
 
-#define RMUTT_VERSION "2.3.1a"
+#define RMUTT_VERSION "3.0a"
 
 extern int yyparse(void);
 extern FILE *yyin;

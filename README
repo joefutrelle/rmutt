@@ -13,9 +13,20 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.3.0
+3.0
 
 CHANGE HISTORY
+
+3.0
+
+* major syntax changes:
+** {x,y} repetition qualifier is now <x,y>
+** (embedded rule/assignment) is now {embedded rule/assignment}
+** positional arguments _1, _2, ... _nnn now supported as follows:
+*** define a rule as rule_name(arg1,arg2,...,argn): body;
+*** call a rule as rule_name(exp,exp,...,exp)
+*** e.g., {dash(a,b): a "-" b} "Alexandra " dash("Woolsey","Puffer")
+*** inside this rule a is synonymous with _1 and b with _2
 
 2.3.0
 
