@@ -21,18 +21,20 @@ int maxStackDepth = -1;
 
 int dynamic = 0;
 
-void usage() {
-     fprintf(stderr,"usage: rmutt [-s] [-r seed] [-i iteration] [-e rule] [grammar]\n");
-     fprintf(stderr,"       -s   max stack depth\n");
-     fprintf(stderr,"       -r   random seed\n");
-     fprintf(stderr,"       -i   iteration\n");
-     fprintf(stderr,"       -e   rule to expand (default: first)\n");
-     fprintf(stderr,"       -d   dynamic variable scope (default: lexical)\n");
-     fprintf(stderr,"       -v   print version number and exit\n");
-}
-
 void version() {
      fprintf(stderr,"rmutt version %s\n",RMUTT_VERSION);
+}
+
+void usage() {
+     version();
+     fprintf(stderr,"usage: rmutt -[bdeirsv] grammar\n");
+     fprintf(stderr,"       -s number      max stack depth\n");
+     fprintf(stderr,"       -r number      random seed\n");
+     fprintf(stderr,"       -i number      iteration\n");
+     fprintf(stderr,"       -e name        name of rule to expand (default: first)\n");
+     fprintf(stderr,"       -d             dynamic variable scope (default: lexical)\n");
+     fprintf(stderr,"       -v             print version number and exit\n");
+     fprintf(stderr,"       -b name=value  bind name to value in the grammar\n");
 }
 
 int main(int argc, char **argv) {
@@ -41,10 +43,14 @@ int main(int argc, char **argv) {
   FILE *in = stdin;
   char *rte = NULL;
   char c;
+  LIST *bindingNames = list_new();
+  LIST *bindingValues = list_new();
+  int i, len; /* FIXME debug */
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "vs:r:i:e:d")) != EOF) {
+  while((c = getopt(argc, argv, "vs:r:i:e:db:")) != EOF) {
+       int i = 0;
        switch(c) {
        case 'v':
 	    version();
@@ -61,6 +67,17 @@ int main(int argc, char **argv) {
 	    break;
        case 'e':
 	    rte = strdup(optarg);
+	    break;
+       case 'b':
+	    for(i=0; *(optarg+i) != '='; i++) {
+		 if(!*(optarg+i)) {
+		      usage();
+		      exit(-1);
+		 }
+	    }
+	    list_add(bindingNames, (char *)strndup(optarg,i));
+	    if(!*(optarg+i+1)) { usage(); }
+	    list_add(bindingValues, (char *)strdup(optarg+i+1));
 	    break;
        case 'd':
 	    dynamic++;
@@ -107,6 +124,21 @@ int main(int argc, char **argv) {
   } else {
        t = label_new(topRule);
   }
+
+  /* add the bindings from the command line */
+  len = list_length(bindingValues);
+  for(i = 0; i < len; i++) {
+       GRAMBIT *assignment;
+       LIST *choices = list_new(), *terms = list_new();
+       char *name, *value;
+       name = list_get(bindingNames,i);
+       value = list_get(bindingValues,i);
+       list_add(terms,literal_new(value));
+       list_add(choices,terms);
+       assignment = assignment_new(name,choices,DYNAMIC_SCOPE);
+       grammar_add(grammar,assignment);
+  }
+
   result = grammar_produce(grammar,t);
   fputs(result,stdout);
   free(result);
