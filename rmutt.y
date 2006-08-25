@@ -111,36 +111,36 @@ Rule: /* A Rule consists of a label and a list of Choices, among other things */
 
      $$=nr;
    }
-   | PackagedLabel '(' Labels ')' ':' Choices {
+   | PackagedLabel '(' Labels ')' ':' Choices { /* positional argument form */
 	GRAMBIT *nr;
 	LIST *choice, *terms;
 	int i, len;
 
-	choice = list_new();
-	terms = list_new();
+	/* the rhs of this type of rule is a single choice consisting of
+	   1. positional variable bindings, followed by
+	   2. an anon choice wrapping the original rhs */
+	terms = list_new(); /* single choice for rhs */
+	choice = list_addToNew(terms); /* rhs */
 
 	/* for each positional argument */
 	len = list_length($3);
 	for(i = 0; i < len; i++) {
-	     GRAMBIT *ass;
-	     LIST *c = list_new(), *t = list_new();
+	     GRAMBIT *binding;
 	     char *argName, *varName;
 
 	     argName = (char *)list_get($3,i); /* positional arg name (e.g., "foo") */
 	     varName = calloc(MAX_VAR_LENGTH,sizeof(char));
 	     sprintf(varName,"_%d",i+1); /* positional var name (e.g., "_2") */
 
-	     /* create an assignment equivalent to e.g., {foo=_2} */
-	     list_add(t,label_new(varName));
-	     list_add(c,t);
+	     /* create a binding equivalent to e.g., {foo=_2} */
+	     binding = binding_new(argName,label_new(varName),LEXICAL_SCOPE);
 	     free(varName);
-	     ass = assignment_new(argName,c,LEXICAL_SCOPE);
 
-	     /* append this assignment to the head of the rule's rhs */
-	     list_add(terms,ass);
+	     /* append this binding to the head of the rule's rhs */
+	     list_add(terms, binding);
 	}
 	
-	/* append the original rhs of the rule as an anon choice to the tail of the rule's lhs */
+	/* append the original rhs of the rule as an anon choice to the tail of the new rule's rhs */
 	list_add(terms,choice_new($6));
 	list_add(choice,terms);
 

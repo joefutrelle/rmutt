@@ -46,6 +46,7 @@ extern GRAMBIT *literal_new(char *); /* create a new literal with the given stri
 extern GRAMBIT *label_new(char *); /* create a new label with the given name */
 extern GRAMBIT *rule_new(char *, LIST *, int); /* create a rule with the given alternatives and scope */
 extern GRAMBIT *assignment_new(char *, LIST *, int); /* same, but assignment */
+extern GRAMBIT *binding_new(char *, GRAMBIT *, int); /* simple assignment with only one choice */
 extern GRAMBIT *rxsub_new(char *, char *); /* create a regex transformation given regex and replacement */
 extern GRAMBIT *mapping_new(char *, GRAMBIT *); /* create a new mapping between a string and a grambit */
 extern GRAMBIT *choice_new(LIST *); /* create a new choice with the given alternatives */

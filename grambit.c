@@ -105,6 +105,11 @@ GRAMBIT *assignment_new(char *label, LIST *choices, int scope) {
   return ng;
 }
 
+/* create a new assignment of a label to a single choice. */
+GRAMBIT *binding_new(char *label, GRAMBIT *choice, int scope) {
+     return assignment_new(label, list_addToNew(list_addToNew(choice)), scope);
+}
+
 GRAMBIT *rxsub_new(char *rx, char *rep) {
      GRAMBIT *ng = grambit_new(RXSUB_T);
      ng->rx_rx = strdup(rx);

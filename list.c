@@ -66,3 +66,9 @@ void *list_getRand(LIST *l) {
      i = random() % list_length(l);
      return list_get(l,i);
 }
+
+LIST *list_addToNew(void *element) {
+     LIST *theList = list_new();
+     list_add(theList, element);
+     return theList;
+}

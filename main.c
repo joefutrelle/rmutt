@@ -32,9 +32,9 @@ void usage() {
      fprintf(stderr,"       -r number      random seed\n");
      fprintf(stderr,"       -i number      iteration\n");
      fprintf(stderr,"       -e name        name of rule to expand (default: first)\n");
+     fprintf(stderr,"       -b name=value  bind name to value in the grammar\n");
      fprintf(stderr,"       -d             dynamic variable scope (default: lexical)\n");
      fprintf(stderr,"       -v             print version number and exit\n");
-     fprintf(stderr,"       -b name=value  bind name to value in the grammar\n");
 }
 
 int main(int argc, char **argv) {
@@ -43,14 +43,13 @@ int main(int argc, char **argv) {
   FILE *in = stdin;
   char *rte = NULL;
   char c;
-  LIST *bindingNames = list_new();
-  LIST *bindingValues = list_new();
-  int i, len; /* FIXME debug */
+  LIST *bindings = list_new();
+  int i, len;
 
   srandom(time(NULL));
 
   while((c = getopt(argc, argv, "vs:r:i:e:db:")) != EOF) {
-       int i = 0;
+       i = 0;
        switch(c) {
        case 'v':
 	    version();
@@ -68,17 +67,23 @@ int main(int argc, char **argv) {
        case 'e':
 	    rte = strdup(optarg);
 	    break;
-       case 'b':
+       case 'b': {
+	    int i;
+	    char *name, *value;
+
 	    for(i=0; *(optarg+i) != '='; i++) {
 		 if(!*(optarg+i)) {
 		      usage();
 		      exit(-1);
 		 }
 	    }
-	    list_add(bindingNames, (char *)strndup(optarg,i));
 	    if(!*(optarg+i+1)) { usage(); }
-	    list_add(bindingValues, (char *)strdup(optarg+i+1));
-	    break;
+
+	    name = (char *)strndup(optarg,i);
+	    value = (char *)strdup(optarg+i+1);
+	    
+	    list_add(bindings, binding_new(name, literal_new(value), DYNAMIC_SCOPE));
+	    } break;
        case 'd':
 	    dynamic++;
 	    break;
@@ -115,34 +120,32 @@ int main(int argc, char **argv) {
        exit(-1);
   }
 
+  /* add the bindings from the command line */
+  len = list_length(bindings);
+  for(i = 0; i < len; i++) {
+       grammar_add(grammar,list_get(bindings,i));
+  }
+
+  /* if there's no top rule, the grammar is empty */
   if(!topRule) {
        fprintf(stderr,"rmutt error: empty grammar\n");
        exit(-1);
   }
+
+  /* determine which rule to expand */
   if(rte) {
-       t = label_new(rte);
+       t = label_new(rte); /* the one from the command line, or */
   } else {
-       t = label_new(topRule);
+       t = label_new(topRule); /* the (default) top rule */
   }
 
-  /* add the bindings from the command line */
-  len = list_length(bindingValues);
-  for(i = 0; i < len; i++) {
-       GRAMBIT *assignment;
-       LIST *choices = list_new(), *terms = list_new();
-       char *name, *value;
-       name = list_get(bindingNames,i);
-       value = list_get(bindingValues,i);
-       list_add(terms,literal_new(value));
-       list_add(choices,terms);
-       assignment = assignment_new(name,choices,DYNAMIC_SCOPE);
-       grammar_add(grammar,assignment);
-  }
-
+  /* produce the output */
   result = grammar_produce(grammar,t);
+
   fputs(result,stdout);
-  free(result);
-  grambit_free(t);
+
+  /*free(result);
+    grambit_free(t);*/
 
   return 0;
 }
