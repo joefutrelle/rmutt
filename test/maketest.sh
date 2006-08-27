@@ -4,6 +4,7 @@ N=$(( $2 - 1 ))
 rm -f ${RM}.out
 while [ $N -ge 0 ];
 do
+  echo $RM
   ../rmutt -i $N $RM >> ${RM}.out
   echo >> ${RM}.out
   N=$(( $N - 1 ))
