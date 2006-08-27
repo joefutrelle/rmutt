@@ -72,3 +72,12 @@ LIST *list_addToNew(void *element) {
      list_add(theList, element);
      return theList;
 }
+
+LIST *list_reverse(LIST *list) {
+     long len = list_length(list), i;
+     LIST *reversed = list_new();
+     for(i = len-1; i >= 0; i--) {
+	  list_add(reversed,list_get(list,i));
+     }
+     return reversed;
+}

@@ -35,14 +35,13 @@ char *g_package[MAX_INCLUDE_DEPTH];
 
 white           [ \t]+
 newline         [\n]
-label           [A-Za-z_][A-Za-z0-9_\-]*
+label           [A-Za-z_][A-Za-z0-9._\-]*
 integer         [0-9]+
 special         [:();|=\[\]{},.><%&+*?$]
 filename        [-A-Za-z0-9_./ ]+
 %%
 
 package { return(PACKAGE); }
-use { return(USE); }
 
 \/\/ { BEGIN(COMMENT); }
 <COMMENT>\n {

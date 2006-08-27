@@ -68,6 +68,73 @@ GRAMBIT *rule_new(char *label, LIST *choices, int scope) {
   return ng;
 }
 
+/* create a new rule with the given label, arguments and choices.
+   choices is a list of lists because each choice is a sequence.
+   if choices are NULL, create a new empty list so that you
+   can add choices with rule_addChoice */
+GRAMBIT *rule_newWithArguments(char *label, LIST *labels, LIST *choices, int scope) {
+     GRAMBIT *nr;
+     LIST *choice, *terms;
+     int i, len;
+     
+     /* the rhs of this type of rule is a single choice consisting of
+	1. positional variable bindings, followed by
+	2. an anon choice wrapping the original rhs */
+     terms = list_new(); /* single choice for rhs */
+     choice = list_addToNew(terms); /* rhs */
+     
+     /* for each positional argument in the lhs */
+     len = list_length(labels);
+     for(i = 0; i < len; i++) {
+	  GRAMBIT *binding;
+	  char *argName, *varName;
+	  
+	  argName = (char *)list_get(labels,i); /* positional arg name (e.g., "foo") */
+	  varName = calloc(MAX_VAR_LENGTH,sizeof(char));
+	  sprintf(varName,"_%d",i+1); /* positional var name (e.g., "_2") */
+	  
+	  /* create a binding equivalent to e.g., {foo=_2} */
+	  binding = binding_new(argName,label_new(varName),LEXICAL_SCOPE);
+	  free(varName);
+	  
+	  /* append this binding to the head of the rule's rhs */
+	  list_add(terms, binding);
+     }
+     
+     /* append the original rhs of the rule as an anon choice to the tail of the new rule's rhs */
+     list_add(terms,choice_new(choices));
+     list_add(choice,terms);
+     
+     nr = rule_new(label, choice, LEXICAL_SCOPE);
+     
+     free(label);
+
+     return nr;
+}
+
+GRAMBIT *call_new(char *label, LIST *arguments) {
+     LIST *choices = list_new();
+     LIST *assignments = list_new();
+     int len=list_length(arguments), i;
+     /* rewrite the choices as a single choice consisting of a list
+	of assignments to positional variables */
+     for(i = 0; i < len; i++) {
+	  LIST *rhs = list_new();
+	  GRAMBIT *ass;
+	  char *varName = calloc(MAX_VAR_LENGTH,sizeof(char));
+	  sprintf(varName,"_%d",i+1); /* lhs of assignment */
+	  list_add(rhs,list_get(arguments,i)); /* rhs of assignment */
+	  ass = assignment_new(varName, rhs, LEXICAL_SCOPE);
+	  list_add(assignments, ass);
+     }
+     /* now add the label to the *end* of the assignments */
+     list_add(assignments,label_new(label));
+     free(label);
+     /* now construct the single choice */
+     list_add(choices,assignments);
+     return choice_new(choices);
+}
+
 /* copy the given grambit */
 GRAMBIT *grambit_copy(GRAMBIT *g) {
      int i,j;

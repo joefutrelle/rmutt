@@ -21,6 +21,7 @@ extern void list_add(LIST *, void *); /* add to end of list */
 extern void list_append(LIST *, LIST *); /* append the second list to the first list */
 extern void list_appendAndFree(LIST *, LIST *); /* append the 2nd list to 1st and free the 2nd */
 extern LIST *list_addToNew(void *); /* return a new 1-element list with the given element */
+extern LIST *list_reverse(LIST *); /* return a reversed copy of the list */
 
 void *list_getRand(LIST *); /* get a random element from a list */
 

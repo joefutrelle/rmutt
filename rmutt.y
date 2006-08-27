@@ -16,8 +16,6 @@ extern char *topRule;
 
 #define CURRENT_PACKAGE g_package[includeStackPtr]
 
-#define MAX_VAR_LENGTH 8
-
 %}
 
 %union {
@@ -33,21 +31,20 @@ extern char *topRule;
 }
 
 %token PACKAGE
-%token USE
 %token <str> LABEL
 %token <str> LITERAL
 %token <integer> INTEGER
 %token <rx> RXSUB
+
 %type <str> Label
-%type <list> Labels
-%type <str> PackagedLabel
-%type <str> Namespace
 %type <list> Choice
 %type <list> Choices
+%type <list> Arguments
 %type <list> Terms
 %type <grambit> Term
 %type <grambit> QualifiedTerm
 %type <grambit> Rule
+%type <grambit> ScopedRule
 %type <grambit> Statement
 %type <dict> Grammar
 
@@ -55,7 +52,7 @@ extern char *topRule;
 
 %pure-parser
 
-%expect 5
+%expect 7
 
 %%
 
@@ -88,7 +85,7 @@ Statement: /* each Statement either adds a Rule or changes the package */
 	    topRule = rule_getLabel($1);
        }
   }
-  | PACKAGE Label ';' {
+  | PACKAGE LABEL ';' {
 #ifdef DEBUG
        printf("setting package to %s\n", $2);
 #endif
@@ -101,8 +98,19 @@ Statement: /* each Statement either adds a Rule or changes the package */
   }
   ;
 
+ScopedRule:
+  Rule {
+       $1->scope = LEXICAL_SCOPE;
+       $$=$1;
+  }
+  | '$' Rule {
+       $2->scope = DYNAMIC_SCOPE;
+       $$=$2;
+  }
+  ;
+
 Rule: /* A Rule consists of a label and a list of Choices, among other things */
-   PackagedLabel ':' Choices {
+   Label ':' Choices {
      GRAMBIT *nr;
 
      nr = rule_new($1, $3, LEXICAL_SCOPE);
@@ -111,46 +119,21 @@ Rule: /* A Rule consists of a label and a list of Choices, among other things */
 
      $$=nr;
    }
-   | PackagedLabel '(' Labels ')' ':' Choices { /* positional argument form */
-	GRAMBIT *nr;
-	LIST *choice, *terms;
-	int i, len;
+   | Label '(' Label ')' ':' Choices { /* positional argument form */
+	LIST *labels;
 
-	/* the rhs of this type of rule is a single choice consisting of
-	   1. positional variable bindings, followed by
-	   2. an anon choice wrapping the original rhs */
-	terms = list_new(); /* single choice for rhs */
-	choice = list_addToNew(terms); /* rhs */
+	labels = list_new();
+	list_add(labels,$3);
 
-	/* for each positional argument */
-	len = list_length($3);
-	for(i = 0; i < len; i++) {
-	     GRAMBIT *binding;
-	     char *argName, *varName;
-
-	     argName = (char *)list_get($3,i); /* positional arg name (e.g., "foo") */
-	     varName = calloc(MAX_VAR_LENGTH,sizeof(char));
-	     sprintf(varName,"_%d",i+1); /* positional var name (e.g., "_2") */
-
-	     /* create a binding equivalent to e.g., {foo=_2} */
-	     binding = binding_new(argName,label_new(varName),LEXICAL_SCOPE);
-	     free(varName);
-
-	     /* append this binding to the head of the rule's rhs */
-	     list_add(terms, binding);
-	}
-	
-	/* append the original rhs of the rule as an anon choice to the tail of the new rule's rhs */
-	list_add(terms,choice_new($6));
-	list_add(choice,terms);
-
-	nr = rule_new($1, choice, LEXICAL_SCOPE);
-	
+	$$=rule_newWithArguments($1,labels,$6,LEXICAL_SCOPE);
 	free($1);
-
-	$$=nr;
    }
-   | PackagedLabel '=' Choices { 
+   | Label '(' Label ',' Arguments ')' ':' Choices { /* positional argument form */
+	list_add($5,$3);
+
+	$$=rule_newWithArguments($1,list_reverse($5),$8,LEXICAL_SCOPE);
+   }
+   | Label '=' Choices { 
      GRAMBIT *na;
 
      na = assignment_new($1, $3, LEXICAL_SCOPE);
@@ -159,32 +142,30 @@ Rule: /* A Rule consists of a label and a list of Choices, among other things */
 
      $$=na;
    }
-   | '$' PackagedLabel ':' Choices {
-     GRAMBIT *nr;
+   ;
 
-     nr = rule_new($2, $4, DYNAMIC_SCOPE);
-     free($2);
-
-     $$=nr;
+Arguments:
+   Label {
+	LIST *args = list_new();
+	list_add(args,$1);
+	$$=args;
    }
-   | '$' PackagedLabel '=' Choices { 
-     GRAMBIT *na;
-
-     na = assignment_new($2, $4, DYNAMIC_SCOPE);
-     free($2);
-
-     $$=na;
+   | Label ',' Arguments {
+	list_add($3,$1);
+	$$=$3;
    }
-;
+   ;
 
-Choices: /* Choices is a list of choices, one of which will be chosen */
+Choices: /* Choices is a list of (at least two) choices, one of which will be chosen */
    Choice {
 	LIST *choices=list_new();
 
 	list_add(choices,$1);
+
 	$$=choices;
    }
-   | Choice INTEGER {
+   |
+   Choice INTEGER {
 	LIST *choices=list_new();
 	{
 	     int i;
@@ -194,15 +175,11 @@ Choices: /* Choices is a list of choices, one of which will be chosen */
 	}
 	$$=choices;
    }
-   | Choices ',' Choice {
-	list_add($1,$3);
-	$$=$1;
-   }
    | Choices '|' Choice {
 	list_add($1,$3);
 	$$=$1;
    }
-   | Choices ',' Choice INTEGER {
+   | Choices '|' Choice INTEGER {
 	{
 	     int i;
 	     for(i = 0; i < $4; i++) {
@@ -211,7 +188,11 @@ Choices: /* Choices is a list of choices, one of which will be chosen */
 	}
 	$$=$1;
    }
-   | Choices '|' Choice INTEGER {
+   | Choices ',' Choice {
+	list_add($1,$3);
+	$$=$1;
+   }
+   | Choices ',' Choice INTEGER {
 	{
 	     int i;
 	     for(i = 0; i < $4; i++) {
@@ -278,37 +259,18 @@ QualifiedTerm: /* A QualifiedTerm is a term with a repetition of transformation 
    ;
 
 Term: /* A Term is a GRAMBIT */
-   PackagedLabel { 
+   Label { 
      $$=label_new($1);
      free($1);
    }
-   | PackagedLabel '(' Choices ')' {
-	LIST *choices = list_new();
-	LIST *assignments = list_new();
-	int len=list_length($3), i;
-	/* rewrite the choices as a single choice consisting of a list
-	   of assignments to positional variables */
-	for(i = 0; i < len; i++) {
-	     LIST *rhs = list_new();
-	     GRAMBIT *ass;
-	     char *varName = calloc(MAX_VAR_LENGTH,sizeof(char));
-	     sprintf(varName,"_%d",i+1); /* lhs of assignment */
-	     list_add(rhs,list_get($3,i)); /* rhs of assignment */
-	     ass = assignment_new(varName, rhs, LEXICAL_SCOPE);
-	     list_add(assignments, ass);
-	}
-	/* now add the label to the *end* of the assignments */
-	list_add(assignments,label_new($1));
-	free($1);
-	/* now construct the single choice */
-	list_add(choices,assignments);
-	$$=choice_new(choices);
+   | Label '(' Choices ')' {
+	$$=call_new($1,$3);
    }
    | LITERAL {
      $$=literal_new($1);
      free($1);
    }
-   | '{' Rule '}' {
+   | '{' ScopedRule '}' {
      $$=$2;
    }
    | '{' Choices '}' {
@@ -325,52 +287,23 @@ Term: /* A Term is a GRAMBIT */
    }
    ;
 
-PackagedLabel:
+Label:
    LABEL {
-	if(CURRENT_PACKAGE) {
-	     char *dotLabel;
-	     dotLabel = gstr_cat(".",$1);
-	     $$ = gstr_cat(CURRENT_PACKAGE,dotLabel);
-	     free(dotLabel);
-	     free($1);
+        if(CURRENT_PACKAGE) { /* we're in the non-default package */
+	     char *fql = NULL; /* fully-qualified label */
+	     char *c;
+	     for(c=$1; *c; c++ && !fql) {
+		  if(*c=='.') { /* it's already fully qualified */
+		       fql=strdup($1);
+		  }
+	     }
+	     if(!fql) {
+		  fql = gstr_catf(gstr_cat(CURRENT_PACKAGE,"."),$1);
+	     }
+	     $$=fql;
 	} else {
 	     $$=$1;
 	}
-   }
-   | Namespace LABEL {
-#ifdef DEBUG
-	printf("namespace = %s\n",$1);
-#endif
-	$$=gstr_catf($1,$2);
-   }
-   ;
-
-Labels:
-   LABEL {
-	LIST *labels = list_new();
-	list_add(labels,$1);
-	$$=labels;
-   }
-   | Labels ',' LABEL {
-	list_add($1,$3);
-	$$=$1;
-   }
-   ;
-
-Label:
-   LABEL {
-	$$=$1;
-   }
-   ;
-
-Namespace:
-   LABEL '.' {
-	$$=gstr_cat($1,".");
-	free($1);
-   }
-   | Namespace LABEL '.' {
-        $$=gstr_catf($1,gstr_cat($2,"."));
-	free($2);
    }
    ;
 %%

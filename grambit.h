@@ -45,13 +45,15 @@ extern void grambit_free(GRAMBIT *); /* free a grambit */
 extern GRAMBIT *literal_new(char *); /* create a new literal with the given string */
 extern GRAMBIT *label_new(char *); /* create a new label with the given name */
 extern GRAMBIT *rule_new(char *, LIST *, int); /* create a rule with the given alternatives and scope */
+extern GRAMBIT *rule_newWithArguments(char *, LIST *, LIST *, int); /* create a rule with the given arguments, alternatives and scope */
 extern GRAMBIT *assignment_new(char *, LIST *, int); /* same, but assignment */
 extern GRAMBIT *binding_new(char *, GRAMBIT *, int); /* simple assignment with only one choice */
 extern GRAMBIT *rxsub_new(char *, char *); /* create a regex transformation given regex and replacement */
 extern GRAMBIT *mapping_new(char *, GRAMBIT *); /* create a new mapping between a string and a grambit */
 extern GRAMBIT *choice_new(LIST *); /* create a new choice with the given alternatives */
 extern GRAMBIT *trans_new(GRAMBIT *, GRAMBIT *); /* create a new transformation given source, result */
-
+extern GRAMBIT *trans_new(GRAMBIT *, GRAMBIT *); /* create a new transformation given source, result */
+extern GRAMBIT *call_new(char *, LIST *); /* create a new rule w/arg call given label, params */
 extern void grambit_addChoice(GRAMBIT *, LIST *); /* add a choice to a rule or assn given alternatives */
 extern char *rule_getLabel(RULE *); /* get the label of a rule */
 extern LIST *rule_getChoices(RULE *); /* get the choices of a rule */
@@ -65,5 +67,7 @@ extern void literal_append(GRAMBIT *, char *); /* append a string to the end of 
 #define choice_getChoices rule_getChoices
 
 extern void grambit_print(GRAMBIT *, FILE *); /* for debugging */
+
+#define MAX_VAR_LENGTH 8
 
 #endif

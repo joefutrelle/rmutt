@@ -4,7 +4,7 @@
 PREFIX=/usr/local
 
 CC = gcc
-CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\" -D_GNU_SOURCE
+CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\"
 # -DDEBUG
 
 OBJ = lex.yy.o rmutt.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
@@ -19,7 +19,7 @@ LIBS = -lfl
 all: $(OBJ) $(EXE)
 
 clean:
-	rm -rf *.o lex.yy.c rmutt.tab.c rmutt.tab.h core *~ $(EXE)
+	rm -rf *.o lex.yy.c rmutt.tab.c rmutt.tab.h rmutt.output core *~ $(EXE)
 
 pure: $(EXE) $(OBJ)
 	purify $(CC) $(OBJ) -o $(EXE) $(LIB_DIR) $(LIBS)
@@ -31,7 +31,7 @@ lex.yy.c: rmutt.lex rmutt.tab.c
 	flex rmutt.lex
 
 rmutt.tab.c: rmutt.y
-	bison -d rmutt.y
+	bison -dv rmutt.y
 
 test: $(EXE)
 	(cd test; sh runtests.sh)

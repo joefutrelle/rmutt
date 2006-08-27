@@ -79,7 +79,8 @@ int main(int argc, char **argv) {
 	    }
 	    if(!*(optarg+i+1)) { usage(); }
 
-	    name = (char *)strndup(optarg,i);
+	    name = (char *) calloc(sizeof(char),i+1);
+	    strncpy(name, optarg, i);
 	    value = (char *)strdup(optarg+i+1);
 	    
 	    list_add(bindings, binding_new(name, literal_new(value), DYNAMIC_SCOPE));
