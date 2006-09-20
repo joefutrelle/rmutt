@@ -1,2 +1,2 @@
 // embedded definitions
-t: {a: "0" | "1"} a;
+t: (a: "0" | "1") a;
