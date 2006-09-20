@@ -1,9 +1,9 @@
 #include "eng.rm"
 #include "chars.rm"
 
-fs: {directory=""} nodes;
+fs: (directory="") nodes;
 node: file "\n", dir;
-file: directory "/" name "." chars.lc<3>;
-dir: {directory={directory "/" name}} directory "/\n" nodes;
+file: directory "/" name "." chars.lc{3};
+dir: (directory=(directory "/" name)) directory "/\n" nodes;
 name: eng.noun_singular > /[^A-Za-z]/_/;
-nodes: node<0,3> 5, node<4>;
+nodes: node{0,3} 5, node{4};

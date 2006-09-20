@@ -6,54 +6,54 @@ package sentence;
 line: s "\n";
 
 s: subject > util.xcap " " eng.verb_trans_past " " object ".";
-subject: {sense="subject"} np;
-object: {sense="object"} np;
+subject: (sense="subject") np;
+object: (sense="object") np;
 np:
-  {person="1","2","3"}
-  {number="singular","plural"}
-  {animate="y","n"}
+  (person="1","2","3")
+  (number="singular","plural")
+  (animate="y","n")
   n;
-n: animate >{
+n: animate >(
   "y" % actor
   "n" % thing
-};
-thing: number >{
-  "singular" % {{noun=eng.noun_singular} qualifiedNoun}
-  "plural" % {{noun=eng.noun_plural} qualifiedNoun}
-};
-actor: number >{
-  "singular" % {eng.noun_name, pronoun}
-  "plural" % {pronoun}
-};
-pronoun: sense >{
-  "subject" % {number >{
-    "singular" % {person >{
+);
+thing: number >(
+  "singular" % ((noun=eng.noun_singular) qualifiedNoun)
+  "plural" % ((noun=eng.noun_plural) qualifiedNoun)
+);
+actor: number >(
+  "singular" % (eng.noun_name, pronoun)
+  "plural" % (pronoun)
+);
+pronoun: sense >(
+  "subject" % (number >(
+    "singular" % (person >(
       "1" % "I"
       "2" % "you"
-      "3" % {"he","she"}}
-    } "plural" % {person >{
+      "3" % ("he","she"))
+    ) "plural" % (person >(
       "1" % "we"
       "2" % "you"
-      "3" % "they"}
-    }}
-  } "object" % {number >{
-    "singular" % {person >{
+      "3" % "they")
+    ))
+  ) "object" % (number >(
+    "singular" % (person >(
       "1" % "me"
       "2" % "you"
-      "3" % {"her","him"}}
-    } "plural" % {person >{
+      "3" % ("her","him"))
+    ) "plural" % (person >(
       "1" % "us"
       "2" % "you"
-      "3" % "them"}
-    }}
-  }
-};
+      "3" % "them")
+    ))
+  )
+);
 qualifiedNoun:
-    {art " " eng.adv} > util.xan " " eng.adj " " noun ,
-    {art " " eng.adj} > util.xan " " noun ,
-    {art " " noun} > util.xan;
-art: number >{
-  "singular" % {"a","the"}
+    (art " " eng.adv) > util.xan " " eng.adj " " noun ,
+    (art " " eng.adj) > util.xan " " noun ,
+    (art " " noun) > util.xan;
+art: number >(
+  "singular" % ("a","the")
   "plural" % "the"
-};
+);
 

@@ -2,23 +2,23 @@
 #include "sentence.rm"
 #include "url.rm"
 
-xml: pi {indent=""} tag "\n";
+xml: pi (indent="") tag "\n";
 
 pi: "<?xml version='1.0'?>\n";
 
-tag: {n=name} {
-  indent startTag "\n" {node "\n"}<1,4> indent endTag 5,
+tag: (n=name) (
+  indent startTag "\n" (node "\n"){1,4} indent endTag 5,
   indent emptyTag
-};
-startTag: "<" n attr<0,3> ">";
+);
+startTag: "<" n attr{0,3} ">";
 endTag: "</" n ">";
-emptyTag: "<" n attr<0,3> "/>";
+emptyTag: "<" n attr{0,3} "/>";
 
-name: eng.noun_singular > /(^A-Za-z)/_/;
+name: eng.noun_singular > /[^A-Za-z]/_/;
 attr:
  " " name "=\"" name "\"" 5,
  " xmlns:" name "=\"" url.url "#" name "\"";
 
-node: {indent={indent "  "}} {tag, indent text};
+node: (indent=(indent "  ")) (tag, indent text);
 
 text: sentence.s;
