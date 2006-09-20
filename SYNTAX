@@ -11,11 +11,13 @@ package ::= "package" package-name;
 
 rule ::= definition | assignment;
 
-definition ::= name ":" choices;
+definition ::= name ":" body;
 
-assignment ::= name "=" choices;
+assignment ::= name "=" body;
 
-choices ::= choice | choices "," choice;
+body ::= choice | body choice-separator choice;
+
+choice-separator ::= "," | "|";
 
 choice ::= terms [probability-multiplier] | ;
 

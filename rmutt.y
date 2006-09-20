@@ -38,7 +38,7 @@ extern char *topRule;
 
 %type <str> Label
 %type <list> Choice
-%type <list> Choices
+%type <list> Body
 %type <list> Arguments
 %type <list> Terms
 %type <grambit> Term
@@ -51,6 +51,7 @@ extern char *topRule;
 %start Top
 
 %pure-parser
+%glr-parser
 
 %expect 7
 
@@ -110,7 +111,7 @@ ScopedRule:
   ;
 
 Rule: /* A Rule consists of a label and a list of Choices, among other things */
-   Label ':' Choices {
+   Label ':' Body {
      GRAMBIT *nr;
 
      nr = rule_new($1, $3, LEXICAL_SCOPE);
@@ -119,21 +120,20 @@ Rule: /* A Rule consists of a label and a list of Choices, among other things */
 
      $$=nr;
    }
-   | Label '(' Label ')' ':' Choices { /* positional argument form */
+   | Label '[' Label ']' ':' Body { /* positional argument form */
 	LIST *labels;
 
 	labels = list_new();
 	list_add(labels,$3);
 
 	$$=rule_newWithArguments($1,labels,$6,LEXICAL_SCOPE);
-	free($1);
    }
-   | Label '(' Label ',' Arguments ')' ':' Choices { /* positional argument form */
+   | Label '[' Label ',' Arguments ']' ':' Body { /* positional argument form */
 	list_add($5,$3);
 
 	$$=rule_newWithArguments($1,list_reverse($5),$8,LEXICAL_SCOPE);
    }
-   | Label '=' Choices { 
+   | Label '=' Body { 
      GRAMBIT *na;
 
      na = assignment_new($1, $3, LEXICAL_SCOPE);
@@ -156,7 +156,7 @@ Arguments:
    }
    ;
 
-Choices: /* Choices is a list of (at least two) choices, one of which will be chosen */
+Body: /* Body is a list of (at least two) choices, one of which will be chosen */
    Choice {
 	LIST *choices=list_new();
 
@@ -175,11 +175,11 @@ Choices: /* Choices is a list of (at least two) choices, one of which will be ch
 	}
 	$$=choices;
    }
-   | Choices '|' Choice {
+   | Body '|' Choice {
 	list_add($1,$3);
 	$$=$1;
    }
-   | Choices '|' Choice INTEGER {
+   | Body '|' Choice INTEGER {
 	{
 	     int i;
 	     for(i = 0; i < $4; i++) {
@@ -188,11 +188,11 @@ Choices: /* Choices is a list of (at least two) choices, one of which will be ch
 	}
 	$$=$1;
    }
-   | Choices ',' Choice {
+   | Body ',' Choice {
 	list_add($1,$3);
 	$$=$1;
    }
-   | Choices ',' Choice INTEGER {
+   | Body ',' Choice INTEGER {
 	{
 	     int i;
 	     for(i = 0; i < $4; i++) {
@@ -228,12 +228,12 @@ QualifiedTerm: /* A QualifiedTerm is a term with a repetition of transformation 
    Term {
 	$$=$1;
    }
-   | QualifiedTerm '<' INTEGER ',' INTEGER '>' {
+   | QualifiedTerm '{' INTEGER ',' INTEGER '}' {
 	$$=$1;
 	$1->min_x = $3;
 	$1->max_x = $5;
    }
-   | QualifiedTerm '<' INTEGER '>' {
+   | QualifiedTerm '{' INTEGER '}' {
         $$=$1;
 	$1->min_x = $3;
 	$1->max_x = $3;
@@ -263,17 +263,17 @@ Term: /* A Term is a GRAMBIT */
      $$=label_new($1);
      free($1);
    }
-   | Label '(' Choices ')' {
+   | Label '[' Body ']' {
 	$$=call_new($1,$3);
    }
    | LITERAL {
      $$=literal_new($1);
      free($1);
    }
-   | '{' ScopedRule '}' {
+   | '(' ScopedRule ')' {
      $$=$2;
    }
-   | '{' Choices '}' {
+   | '(' Body ')' {
      $$=choice_new($2);
    }
    | RXSUB {

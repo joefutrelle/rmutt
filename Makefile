@@ -4,7 +4,7 @@
 PREFIX=/usr/local
 
 CC = gcc
-CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\"
+CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\" -DYYDEBUG=1
 # -DDEBUG
 
 OBJ = lex.yy.o rmutt.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
