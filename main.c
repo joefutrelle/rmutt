@@ -9,7 +9,7 @@
 #include "gstr.h"
 #include "rxutil.h"
 
-#define RMUTT_VERSION "3.0a"
+#define RMUTT_VERSION "2.5"
 
 extern int yyparse(void);
 extern FILE *yyin;
@@ -33,7 +33,7 @@ void usage() {
      fprintf(stderr,"       -i number      iteration\n");
      fprintf(stderr,"       -e name        name of rule to expand (default: first)\n");
      fprintf(stderr,"       -b name=value  bind name to value in the grammar\n");
-     fprintf(stderr,"       -d             dynamic variable scope (default: lexical)\n");
+     fprintf(stderr,"       -d             dynamic variable scoping (default: lexical)\n");
      fprintf(stderr,"       -v             print version number and exit\n");
 }
 
