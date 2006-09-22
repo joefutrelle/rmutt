@@ -94,7 +94,7 @@ GRAMBIT *rule_newWithArguments(char *label, LIST *labels, LIST *choices, int sco
 	  sprintf(varName,"_%d",i+1); /* positional var name (e.g., "_2") */
 	  
 	  /* create a binding equivalent to e.g., {foo=_2} */
-	  binding = binding_new(argName,label_new(varName),LEXICAL_SCOPE);
+	  binding = binding_new(argName,label_new(varName),LOCAL_SCOPE);
 	  free(varName);
 	  
 	  /* append this binding to the head of the rule's rhs */
@@ -105,7 +105,7 @@ GRAMBIT *rule_newWithArguments(char *label, LIST *labels, LIST *choices, int sco
      list_add(terms,choice_new(choices));
      list_add(choice,terms);
      
-     nr = rule_new(label, choice, LEXICAL_SCOPE);
+     nr = rule_new(label, choice, LOCAL_SCOPE);
      
      free(label);
 
@@ -124,7 +124,7 @@ GRAMBIT *call_new(char *label, LIST *arguments) {
 	  char *varName = calloc(MAX_VAR_LENGTH,sizeof(char));
 	  sprintf(varName,"_%d",i+1); /* lhs of assignment */
 	  list_add(rhs,list_get(arguments,i)); /* rhs of assignment */
-	  ass = assignment_new(varName, rhs, LEXICAL_SCOPE);
+	  ass = assignment_new(varName, rhs, LOCAL_SCOPE);
 	  list_add(assignments, ass);
      }
      /* now add the label to the *end* of the assignments */

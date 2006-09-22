@@ -30,16 +30,25 @@ static char *getLabel(char *packagedLabel);
 void grammar_add(GRAMMAR *g, RULE *r) {
      char *label = rule_getLabel(r);
      /* if the scope is lexical, add to this grammar */
-     if(r->scope == LEXICAL_SCOPE) {
+     if(r->scope == LOCAL_SCOPE) {
 	  dict_put(g->contents,label,r);
-     } else {
+     } else if(r->scope == NON_LOCAL_SCOPE) {
 	  /* otherwise walk up the grammar stack */
 	  GRAMMAR *frame = grammar_binding(g, label);
 	  if(!frame) { /* no binding. walk up to top frame */
-	       for(frame = g; frame->parent; frame = frame->parent)
-		    ;
+	       frame = g;
+	       while(frame->parent) {
+		    frame = frame->parent;
+	       }
 	  }
 	  /* now we're at the right frame. */
+	  dict_put(frame->contents,label,r);
+     } else if(r->scope == GLOBAL_SCOPE) {
+	  GRAMMAR *frame = g;
+	  /* walk up to the top frame */
+	  while(frame->parent) {
+	       frame = frame->parent;
+	  }
 	  dict_put(frame->contents,label,r);
      }
 }

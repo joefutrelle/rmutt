@@ -101,11 +101,14 @@ Statement: /* each Statement either adds a Rule or changes the package */
 
 ScopedRule:
   Rule {
-       $1->scope = LEXICAL_SCOPE;
+       $1->scope = LOCAL_SCOPE; /* overrides default LOCAL scope in Rule production */
        $$=$1;
   }
+  | '^' Rule {
+       $2->scope = NON_LOCAL_SCOPE; /* overrides default LOCAL scope in Rule production */
+  }
   | '$' Rule {
-       $2->scope = DYNAMIC_SCOPE;
+       $2->scope = GLOBAL_SCOPE; /* overrides default LOCAL scope in Rule production */
        $$=$2;
   }
   ;
@@ -114,7 +117,7 @@ Rule: /* A Rule consists of a label and a list of Choices, among other things */
    Label ':' Body {
      GRAMBIT *nr;
 
-     nr = rule_new($1, $3, LEXICAL_SCOPE);
+     nr = rule_new($1, $3, LOCAL_SCOPE);
 
      free($1);
 
@@ -126,17 +129,17 @@ Rule: /* A Rule consists of a label and a list of Choices, among other things */
 	labels = list_new();
 	list_add(labels,$3);
 
-	$$=rule_newWithArguments($1,labels,$6,LEXICAL_SCOPE);
+	$$=rule_newWithArguments($1,labels,$6,LOCAL_SCOPE);
    }
    | Label '[' Label ',' Arguments ']' ':' Body { /* positional argument form */
 	list_add($5,$3);
 
-	$$=rule_newWithArguments($1,list_reverse($5),$8,LEXICAL_SCOPE);
+	$$=rule_newWithArguments($1,list_reverse($5),$8,LOCAL_SCOPE);
    }
    | Label '=' Body { 
      GRAMBIT *na;
 
-     na = assignment_new($1, $3, LEXICAL_SCOPE);
+     na = assignment_new($1, $3, LOCAL_SCOPE);
 
      free($1);
 

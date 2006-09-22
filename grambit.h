@@ -17,9 +17,10 @@
 #define CHOICE_T     6 /* an anonymous choice i.e. "(foo, bar)" */
 #define TRANS_T      7 /* transformation i.e. "foo > /fish/duck/" */
 
-/* scoping parameters */
-#define LEXICAL_SCOPE  0 /* local variable or rule (default) */
-#define DYNAMIC_SCOPE  1 /* non-local variable or rule */
+/* scoping parameters controlling what grammar a rule or assignment is added to */
+#define LOCAL_SCOPE  0     /* local grammar */
+#define NON_LOCAL_SCOPE 1  /* first ancestor grammar in which the label is bound */
+#define GLOBAL_SCOPE 2     /* first ancestor grammar without a parent */
 
 typedef struct _grambit {
      int type;      /* what type of grambit */
@@ -68,6 +69,8 @@ extern void literal_append(GRAMBIT *, char *); /* append a string to the end of 
 
 extern void grambit_print(GRAMBIT *, FILE *); /* for debugging */
 
+/* maximum number of digits in number of positional arguments.
+   8 is ridiculously high allowing for 99999999 positional arguments. */
 #define MAX_VAR_LENGTH 8
 
 #endif

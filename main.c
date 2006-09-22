@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 	    strncpy(name, optarg, i);
 	    value = (char *)strdup(optarg+i+1);
 	    
-	    list_add(bindings, binding_new(name, literal_new(value), DYNAMIC_SCOPE));
+	    list_add(bindings, binding_new(name, literal_new(value), GLOBAL_SCOPE));
 	    } break;
        case 'd':
 	    dynamic++;
