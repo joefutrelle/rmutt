@@ -6,7 +6,7 @@ echo -n "${NAME}... "
 rm -f ${RM}.run
 while [ $N -ge 0 ];
 do
-  ../rmutt -i $N $RM >> ${RM}.run
+  ../rmutt -i $N $RM >> ${RM}.run 2>/dev/null
   echo >> ${RM}.run
   N=$(( $N - 1 ))
 done
