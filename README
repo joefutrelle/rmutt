@@ -27,10 +27,10 @@ CHANGE HISTORY
 *** call a rule as rule_name[exp,exp,...,exp]
 *** e.g., (dash[a,b]: a "-" b) "Alexandra " dash["Woolsey","Puffer"]
 *** inside this rule a is synonymous with _1 and b with _2
-** clarified scoping rules
+** clarified scoping rules:
 *** LOCAL (no qualifier): modifies local grammar (formerly LEXICAL)
 *** NON_LOCAL ("^"): modifies nearest ancestor binding
-*** GLOBAL ("$"): modifies top-level binding (which still may be shadowed)
+*** GLOBAL ("$"): modifies top-level binding (which still may be shadowed) (formerly DYNAMIC)
 
 2.3.0
 

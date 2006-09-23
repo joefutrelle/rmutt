@@ -2,21 +2,17 @@ INSTALLING RMUTT
 
 REQUIREMENTS
 
-The precompiled binary for Windows contains everything you need.  You
-don't need to compile it or download any other packages, so you can
-skip ahead in this document to USING RMUTT.
-
-Compiling rmutt requires flex and bison as well as POSIX regex
-support.  These are standard in virtually all Linux distributions, but
-may need to be downloaded from a GNU archive for other UNIX systems.
-GNU packages can be downloaded from
+Compiling rmutt requires flex and bison (1.5 or greater) as well as
+POSIX regex support. These are standard in virtually all Linux
+distributions, but may need to be downloaded from a GNU archive for
+other UNIX systems. GNU packages can be downloaded from
 
 ftp://ftp.gnu.org/gnu/
 
-or one of its mirrors.  Cygwin has its own way of downloading packages;
+or one of its mirrors. Cygwin has its own way of downloading packages;
 for details go to
 
-http://sources.redhat.com/cygwin/
+http://www.cygwin.com/
 
 COMPILING RMUTT
 
@@ -44,20 +40,14 @@ the PREFIX directory.
 
 USING RMUTT
 
-To use the precompiled Windows executable, unpack the .zip file and
-open up the Windows command prompt.  Enter the directory containing
-rmutt.exe and the Cygwin DLL.  You should be able to run rmutt.exe
-from the command line.  Don't move the executable into another
-directory without also moving the DLL along with it.
-
-Using rmutt under UNIX or Cygwin is simpler; just make sure the
+Using rmutt under UNIX or Cygwin is simple; just make sure the
 executable is in your path, or type ./rmutt if you're in the same
 directory as the executable.
 
 COMMAND-LINE SYNTAX
 
 rmutt accepts a grammar as an input. If you have a file with an rmutt
-grammar on it, you can mention it on the command line like this:
+grammar in it, you can mention it on the command line like this:
 
 	rmutt myfile.rm
 
