@@ -1,0 +1,50 @@
+#include "eng.rm"
+#include "chars.rm"
+
+package url;
+
+top: (url "\n"){20};
+
+url:
+ "http://" hostport path ("#" fragment|"?" params)?;
+
+hostport:
+ (dns | ip) (":" port)?;
+
+dns:
+ (eng.noun_singular "."){1,3} tld;
+
+tld:
+ "com"|"edu"|"org"|"net";
+
+port:
+ nonzero_digit
+ chars.digit{0,4};
+
+fragment:
+ eng.noun_singular;
+
+ip:
+ (ottff "."){3} ottff;
+
+ottff:
+ nonzero_digit |
+ nonzero_digit chars.digit |
+ "1" chars.digit{2} |
+ "2" ("0"|"1"|"2"|"3"|"4") chars.digit |
+ "25" ("0"|"1"|"2"|"3"|"4"|"5");
+
+nonzero_digit:
+ "1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9";
+
+path: directory "/" label "." chars.lc{3};
+directory:
+ "/" label directory?;
+label: eng.noun_singular > /[^A-Za-z]/_/;
+
+params:
+ param |
+ param "&" params;
+
+param:
+ chars.lc "=" (label | chars.digit{1,5});

@@ -2,23 +2,31 @@
 #include "sentence.rm"
 #include "url.rm"
 
+package xml;
+
 xml: pi (indent="") tag "\n";
+
+pi[name,attrs]:
+ "<?" name attrs "?>";
 
 pi: "<?xml version='1.0'?>\n";
 
 tag: (n=name) (
-  indent startTag "\n" (node "\n"){1,4} indent endTag 5,
-  indent emptyTag
+  indent startTag[n] "\n" (node "\n"){1,4} indent endTag[n] 6,
+  indent emptyTag[n]
 );
-startTag: "<" n attr{0,3} ">";
-endTag: "</" n ">";
-emptyTag: "<" n attr{0,3} "/>";
+startTag[n]: "<" n attr{0,3} ">";
+endTag[n]: "</" n ">";
+emptyTag[n]: "<" n attr{0,3} "/>";
 
 name: eng.noun_singular > /[^A-Za-z]/_/;
 attr:
  " " name "=\"" name "\"" 5,
- " xmlns:" name "=\"" url.url "#" name "\"";
+ " xmlns:" name "=\"" escape[url.url] "\"";
 
-node: (indent=(indent "  ")) (tag, indent text);
+node: (indent=(indent "  ")) (tag | indent text 2);
 
 text: sentence.s;
+
+escape[text]:
+ text > /&/&amp;/ > /\"/&quot;/;
