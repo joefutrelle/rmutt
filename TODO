@@ -1,4 +1,4 @@
-* revise syntax more
-* bug: bareword support works for *,+,and? but not {n,m}
+* revise "%" syntax for better readability when it's used as a "case
+statement"
 
 
