@@ -34,7 +34,8 @@ void grammar_add(GRAMMAR *g, RULE *r) {
 	  dict_put(g->contents,label,r);
      } else if(r->scope == NON_LOCAL_SCOPE) {
 	  /* otherwise walk up the grammar stack */
-	  GRAMMAR *frame = grammar_binding(g, label);
+	  GRAMMAR *frame = NULL;
+	  frame = grammar_binding(g, label);
 	  if(!frame) { /* no binding. walk up to top frame */
 	       frame = g;
 	       while(frame->parent) {
@@ -44,8 +45,8 @@ void grammar_add(GRAMMAR *g, RULE *r) {
 	  /* now we're at the right frame. */
 	  dict_put(frame->contents,label,r);
      } else if(r->scope == GLOBAL_SCOPE) {
-	  GRAMMAR *frame = g;
 	  /* walk up to the top frame */
+	  GRAMMAR *frame = g;
 	  while(frame->parent) {
 	       frame = frame->parent;
 	  }
@@ -85,10 +86,7 @@ GRAMMAR *grammar_binding(GRAMMAR *gram, char *label) {
      /* not found. try it without the package (if any) */
      noPackage = getLabel(label);
      if(noPackage) {
-	  r = (RULE *)dict_get(gram->contents, noPackage);
-     }
-     if(r) {
-	  return gram;
+	  return grammar_binding(gram, noPackage);
      }
      /* OK, there really is no such binding. */
      return NULL;
@@ -233,9 +231,13 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 		    list_appendAndFree(result,expand_choice(gram,c));
 	       }
 	       break;
-	  default:
+	  case RXSUB_T:
+	  case MAPPING_T:
 	       list_add(result,g);
 	       break;
+	  default:
+	       fprintf(stderr,"rmutt: fatal: illegal grambit type %d\n",g->type);
+	       exit(-1);
 	  }
      }
 

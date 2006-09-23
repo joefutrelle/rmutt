@@ -11,10 +11,7 @@ OBJ = lex.yy.o rmutt.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dic
 EXE = rmutt
 
 LIB_DIR = 
-# comment out the next line to compile under cygwin
 LIBS = -lfl
-# uncomment the next line to compile under cygwin
-# LIBS = -lfl -lregex
 
 all: $(OBJ) $(EXE)
 

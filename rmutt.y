@@ -106,6 +106,7 @@ ScopedRule:
   }
   | '^' Rule {
        $2->scope = NON_LOCAL_SCOPE; /* overrides default LOCAL scope in Rule production */
+       $$=$2;
   }
   | '$' Rule {
        $2->scope = GLOBAL_SCOPE; /* overrides default LOCAL scope in Rule production */
