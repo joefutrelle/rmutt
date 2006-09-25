@@ -6,6 +6,8 @@
 #include "global.h"
 #include "rmutt.tab.h"
 #include "gstr.h"
+#include "dict.h"
+#include "list.h"
 
 GSTR *string;
 GSTR *rx;
@@ -24,6 +26,8 @@ int includeStackPtr = 0;
 int g_lineNumber[MAX_INCLUDE_DEPTH];
 char *g_fileName[MAX_INCLUDE_DEPTH];
 char *g_package[MAX_INCLUDE_DEPTH];
+
+DICT *g_included = NULL;
 
 %}
 
@@ -120,6 +124,8 @@ package { return(PACKAGE); }
 <INCLUDE>\"[ \t]*\n {
      FILE *f;
      char *sharedPath;
+     DICT *includedIn;
+     char *packageIx;
 
      g_lineNumber[includeStackPtr]++; /* the #include line counts as a line in this file */
 
@@ -128,6 +134,18 @@ package { return(PACKAGE); }
 	  fprintf( stderr, "Includes nested too deeply" );
 	  exit( 1 );
      }
+
+     /* lazily initialize dict of included files */
+     if(!g_included) { g_included = dict_new(); }
+     /* have we included this file already? */
+     includedIn = (DICT *)dict_get(g_included, includeFile);
+
+     packageIx = g_package[includeStackPtr];
+     if(!packageIx) { packageIx = "(null)"; }
+
+     if(includedIn && dict_get(includedIn, packageIx)) {
+	  /* we've already included this file in this package, so skip */
+     } else {
 
         f = fopen( includeFile, "r" );
 
@@ -143,19 +161,29 @@ package { return(PACKAGE); }
 	} else {
 	     yyin = f;
 
+	     /* record what we're including */
+	     if(!includedIn) {
+		  includedIn = dict_new();
+		  dict_put(g_included, includeFile, includedIn);
+	     }
+	     dict_put(includedIn, packageIx, gstr_new("t"));
+
+	     /* perform the include */
 	     include_stack[includeStackPtr++] =
 		  YY_CURRENT_BUFFER;
 
 	     g_lineNumber[includeStackPtr] = 0;
 	     g_fileName[includeStackPtr] = includeFile;
+	     g_package[includeStackPtr] = NULL;
 
 	     yy_switch_to_buffer(
 		  yy_create_buffer( yyin, YY_BUF_SIZE ) );
 	}
 
 	/* free(includeFile); */
+     }
 
-	BEGIN(INITIAL);
+     BEGIN(INITIAL);
 }
 
 <<EOF>> {
