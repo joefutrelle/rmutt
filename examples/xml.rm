@@ -12,7 +12,7 @@ pi[name,attrs]:
 pi: "<?xml version='1.0'?>\n";
 
 tag: (n=name) (
-  indent startTag[n] "\n" (node "\n"){1,4} indent endTag[n] 6,
+  indent startTag[n] "\n" (node "\n"){1,6} indent endTag[n] 5,
   indent emptyTag[n]
 );
 startTag[n]: "<" n attr{0,3} ">";
