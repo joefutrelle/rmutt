@@ -11,7 +11,12 @@ top:
   rootNode;
 
 rootNode:
-  node["jcr:root",xml.attr["xmlns:ns",url.url]];
+  (attrs=
+    xml.attr["xmlns:ns",url.url] " "
+    xml.attr["xmlns:jcr","http://www.jcp.org/jcr/1.0"] " "
+    xml.attr["xmlns:nt","http://www.jcp.org/jcr/nt/1.0"] " "
+    xml.attr["xmlns:sv","http://www.jcp.org/jcr/sv/1.0"])
+  node["jcr:root",attrs];
 
 node[n,attrs]:
   (attrs=attrs" "xml.attr["sv:name",n])
