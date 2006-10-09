@@ -22,15 +22,19 @@ node[n,attrs]:
   (attrs=attrs" "xml.attr["sv:name",n])
   i xml.start["sv:node",attrs] "\n"
   ((i=i"  ")
+   primaryType
    properties
    children)
   i xml.end["sv:node"] "\n";
 
-properties:
-  (property["String",value[sentence.s]{1,3}] |
-   property["Long",value[long]{1,3}]);
+primaryType:
+  property["jcr:primaryType","Name",value["nt:base"]];
 
-property[type,values]:
+properties:
+  (property[name,"String",value[sentence.s]{1,3}] |
+   property[name,"Long",value[long]{1,3}]);
+
+property[name,type,values]:
   i xml.start["sv:property",xml.attr["sv:name",name]" "xml.attr["sv:type",type]] "\n"
     values
   i xml.end["sv:property"] "\n";

@@ -5,9 +5,9 @@ package url;
 top: (url "\n"){20};
 
 url:
- "http://" hostport path ("#" fragment)?;
+ "http://" hostport path;
 url_wparams:
- "http://" hostport path ("#" fragment|"?" params)?;
+ "http://" hostport path ("?" params)?;
 
 hostport:
  (dns | ip) (":" port)?;
