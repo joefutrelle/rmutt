@@ -1,32 +1,29 @@
-#include "eng.rm"
-#include "sentence.rm"
-#include "url.rm"
-
 package xml;
 
-xml: pi (indent="") tag "\n";
+top:
+  header
+  empty["foo",];
+
+header:
+  pi["xml",attr["version","1.0"]];
+
+attr[name,value]:
+  name "=\"" pcdata[value] "\"";
+
+lsp[attrs]:
+  attrs>/^([^ ])/ \1/;
 
 pi[name,attrs]:
- "<?" name attrs "?>";
+  "<?" name lsp[attrs] "?>";
 
-pi: "<?xml version='1.0'?>\n";
+empty[name,attrs]:
+  "<" name "/>";
 
-tag: (n=name) (
-  indent startTag[n] "\n" (node "\n"){1,6} indent endTag[n] 5,
-  indent emptyTag[n]
-);
-startTag[n]: "<" n attr{0,3} ">";
-endTag[n]: "</" n ">";
-emptyTag[n]: "<" n attr{0,3} "/>";
+start[name,attrs]:
+  "<" name lsp[attrs] ">";
 
-name: eng.noun_singular > /[^A-Za-z]/_/;
-attr:
- " " name "=\"" name "\"" 5,
- " xmlns:" name "=\"" escape[url.url] "\"";
+end[name]:
+  "</" name ">";
 
-node: (indent=(indent "  ")) (tag | indent text 2);
-
-text: sentence.s;
-
-escape[text]:
- text > /&/&amp;/ > /\"/&quot;/;
+pcdata[text]:
+  text > /&/&amp;/ > /</&lt;/ > /\"/&quot;/;

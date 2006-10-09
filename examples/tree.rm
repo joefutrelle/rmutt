@@ -1,11 +1,11 @@
 #include "eng.rm"
 #include "chars.rm"
-#include "xml.rm"
+#include "spew_xml.rm"
 
 fs: (directory=".") nodes;
 nodes: node{0,4} 2 | node{5,9};
 node:
-  "cat > " file "<<EOF\n" xml.xml "EOF\n" 3 |
+  "cat > " file "<<EOF\n" spew_xml.doc "EOF\n" 3 |
   dir;
 file: directory "/" name ".xml";
 dir: "mkdir -p " (directory=(directory "/" name)) directory "/\n" nodes;
