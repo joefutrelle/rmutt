@@ -13,9 +13,15 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.5
+2.5.1
 
 CHANGE HISTORY
+
+2.5.1
+
+* added xml utility example, replacing old xml.rm which was renamed
+spew_xml.rm
+* added JCR system view example
 
 2.5
 
