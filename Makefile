@@ -3,15 +3,18 @@
 # will be installed in $PREFIX/share/rmutt
 PREFIX=/usr/local
 
+# these values are included for users of Darwin ports on Mac OS X
+INC_DIRS = -I/opt/local/include
+LIB_DIR = -L/opt/local/lib
+
 CC = gcc
-CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\" -DYYDEBUG=1
+CFLAGS = -g -Wall -pedantic -DRMUTT_INCLUDE=\"$(PREFIX)/share/rmutt\" -DYYDEBUG=1 $(INC_DIRS)
 # -DDEBUG
 
 OBJ = lex.yy.o rmutt.tab.o grambit.o list.o main.o grammar.o gstr.o rxutil.o dict.o choose.o
 EXE = rmutt
 
-LIB_DIR = 
-LIBS = -lfl
+LIBS = -lfl -lgmp
 
 all: $(OBJ) $(EXE)
 

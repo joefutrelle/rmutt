@@ -14,6 +14,14 @@ for details go to
 
 http://www.cygwin.com/
 
+Since 2.6, rmutt also requires the GNU Multiple Precision Arithmetic
+Library, also known as libgmp, which rmutt uses to index all possible
+strings of any grammar.
+
+http://gmplib.org/
+
+and binary packages are available for most popular *nix distributions.
+
 COMPILING RMUTT
 
 Under UNIX or Cygwin, just unpack the archive, and enter the resulting

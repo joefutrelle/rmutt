@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
@@ -9,7 +10,7 @@
 #include "gstr.h"
 #include "rxutil.h"
 
-#define RMUTT_VERSION "2.5.1"
+#define RMUTT_VERSION "2.6"
 
 extern int yyparse(void);
 extern FILE *yyin;
@@ -31,6 +32,7 @@ void usage() {
      fprintf(stderr,"       -s number      max stack depth\n");
      fprintf(stderr,"       -r number      random seed\n");
      fprintf(stderr,"       -i number      iteration\n");
+     fprintf(stderr,"       -I file        read the iteration from a file\n");
      fprintf(stderr,"       -e name        name of rule to expand (default: first)\n");
      fprintf(stderr,"       -b name=value  bind name to value in the grammar\n");
      fprintf(stderr,"       -d             dynamic variable scoping (default: lexical)\n");
@@ -48,7 +50,7 @@ int main(int argc, char **argv) {
 
   srandom(time(NULL));
 
-  while((c = getopt(argc, argv, "vs:r:i:e:db:")) != EOF) {
+  while((c = getopt(argc, argv, "vs:r:i:I:e:db:")) != EOF) {
        i = 0;
        switch(c) {
        case 'v':
@@ -62,8 +64,16 @@ int main(int argc, char **argv) {
 	    srandom(atoi(optarg));
 	    break;
        case 'i':
-	    choose_setIteration(atol(optarg));
+	    choose_setIterationString(optarg);
 	    break;
+       case 'I': {
+	    FILE *of = fopen(optarg,"r");
+	    if(!of) {
+		 fprintf(stderr,"error: unable to open iteration file %s\n",optarg);
+		 exit(-1);
+	    }
+	    choose_setIterationFile(of);
+	    } break;
        case 'e':
 	    rte = strdup(optarg);
 	    break;

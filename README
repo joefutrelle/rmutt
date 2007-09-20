@@ -13,9 +13,15 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.5.1
+2.6
 
 CHANGE HISTORY
+
+2.6
+
+* now requires libgmp
+* -i now accepts aribrary-length integers
+* added -I option for reading iteration number from a file
 
 2.5.1
 
