@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <gmp.h>
 #include "choose.h"
 
@@ -29,7 +30,10 @@ void choose_setIterationString(char *string) {
 	  fprintf(stderr,"error: iteration string is not a number\n");
 	  exit(-1);
      }
-     if(mpz_fits_ulong_p(oracle)) {
+     if(!strcmp(string,"0")) { /* gmp doesn't like 0? */
+	  iteration = 0L;
+	  chooseMode = MODE_LONG;
+     } else if(mpz_fits_ulong_p(oracle)) {
 	  iteration = mpz_get_ui(oracle);
 	  mpz_clear(oracle);
 	  chooseMode = MODE_LONG;
