@@ -191,6 +191,13 @@ GRAMBIT *mapping_new(char *rx, GRAMBIT *g) {
      return ng;
 }
 
+GRAMBIT *rxmatch_new(char *rx, GRAMBIT *g) {
+     GRAMBIT *ng = grambit_new(RXMATCH_T);
+     ng->rx_rx = strdup(rx);
+     ng->trans = g;
+     return ng;
+}
+
 GRAMBIT *trans_new(GRAMBIT *s, GRAMBIT *t) {
      GRAMBIT *ng = grambit_new(TRANS_T);
      ng->source = s;

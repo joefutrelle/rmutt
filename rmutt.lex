@@ -72,6 +72,12 @@ package { return(PACKAGE); }
 }
 
 \/ { rx = gstr_new(""); BEGIN(SUB1); }
+<SUB1>\/{white}% {
+     lvalp->rx.rx = gstr_detach(rx);
+     unput('%');
+     BEGIN(INITIAL);
+     return(RXMATCH);
+}
 <SUB1>\/ {
      lvalp->rx.rx = gstr_detach(rx);
      replace = gstr_new("");

@@ -16,6 +16,7 @@
 #define MAPPING_T    5 /* a simple string->string mapping */
 #define CHOICE_T     6 /* an anonymous choice i.e. "(foo, bar)" */
 #define TRANS_T      7 /* transformation i.e. "foo > /fish/duck/" */
+#define RXMATCH_T    8 /* string->string mapping with regex match instead of string equality */
 
 /* scoping parameters controlling what grammar a rule or assignment is added to */
 #define LOCAL_SCOPE  0     /* local grammar */
@@ -53,7 +54,7 @@ extern GRAMBIT *rxsub_new(char *, char *); /* create a regex transformation give
 extern GRAMBIT *mapping_new(char *, GRAMBIT *); /* create a new mapping between a string and a grambit */
 extern GRAMBIT *choice_new(LIST *); /* create a new choice with the given alternatives */
 extern GRAMBIT *trans_new(GRAMBIT *, GRAMBIT *); /* create a new transformation given source, result */
-extern GRAMBIT *trans_new(GRAMBIT *, GRAMBIT *); /* create a new transformation given source, result */
+extern GRAMBIT *rxmatch_new(char *, GRAMBIT *); /* create a new str->str w/regex matching */
 extern GRAMBIT *call_new(char *, LIST *); /* create a new rule w/arg call given label, params */
 extern void grambit_addChoice(GRAMBIT *, LIST *); /* add a choice to a rule or assn given alternatives */
 extern char *rule_getLabel(RULE *); /* get the label of a rule */

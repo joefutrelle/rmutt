@@ -35,6 +35,7 @@ extern char *topRule;
 %token <str> LITERAL
 %token <integer> INTEGER
 %token <rx> RXSUB
+%token <rx> RXMATCH
 
 %type <str> Label
 %type <list> Choice
@@ -53,7 +54,7 @@ extern char *topRule;
 %pure-parser
 %glr-parser
 
-%expect 7
+%expect 12
 
 %%
 
@@ -279,6 +280,10 @@ Term: /* A Term is a GRAMBIT */
    }
    | '(' Body ')' {
      $$=choice_new($2);
+   }
+   | RXMATCH '%' QualifiedTerm {
+     $$=rxmatch_new($1.rx,$3);
+     free($1.rx);
    }
    | RXSUB {
      $$=rxsub_new($1.rx, $1.rep);

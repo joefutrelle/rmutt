@@ -233,6 +233,7 @@ LIST *grammar_expand(GRAMMAR *parentGram, GRAMBIT *g) {
 	       break;
 	  case RXSUB_T:
 	  case MAPPING_T:
+	  case RXMATCH_T:
 	       list_add(result,g);
 	       break;
 	  default:
@@ -321,10 +322,20 @@ char *transform(GRAMMAR *gram, char *str, GRAMBIT *trans) {
 #endif
 	  return regsub(str,trans->rx_rx,trans->rx_rep,REG_EXTENDED);
      case MAPPING_T:
-	  if(!strcmp(str,trans->rx_rx))
+	  if(!strcmp(str,trans->rx_rx)) {
 	       return(grammar_produce(gram, trans->trans));
-	  else
+	  } else {
 	       return(strdup(str));
+	  }
+     case RXMATCH_T: {
+ 	  char **result = regmatch(str,trans->rx_rx,1,REG_EXTENDED,0);
+	  if(result==NULL) {
+	       return strdup(str);
+	  } else {
+	       free(*result);
+	       free(result);
+	       return grammar_produce(gram,trans->trans);
+	  }}
      }
      fprintf(stderr,"error: illegal transformation\n");
      return NULL;
