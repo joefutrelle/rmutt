@@ -3,18 +3,18 @@
 top:
   (n1=number)
   (n2=number)
-  n1 " + " n2 " = " add[n1,n2] "\n";
+  n1 " > " n2 " = " gt[n1,n2] "\n";
 
 digit: chars.digit;
-number: zupfx[digit{1,10}];
+number: zupfx[digit{2}];
 
 lsd[a]: a>/.*(.)$/\1/;
-msds[a]: a>/0*(.*).$/\1/;
+msds[a]: a>/0*(.*).$/\1/>/^$/0/;
 
 zpfx[i]:
-  i>/^0*(.*)/0\1/;
+  i>/^(-?)0*(.*)/\10\2/;
 zupfx[i]:
-  i>/^0+(.*)/\1/>/^$/0/;
+  i>/^(-?)0+(.*)/\1\2/>/^$/0/;
 
 inc_d[i]:
   i >("9"%"10" "8"%"9" "7"%"8" "6"%"7" "5"%"6" "4"%"5" "3"%"4" "2"%"3" "1"%"2" "0"%"1");
@@ -52,9 +52,7 @@ add[a,b]:
    (ignore=a>"0"%(^sum=b))
    (ignore=b>"0"%(^sum=a))
    (sum>"NaN"%(
-     (la = lsd[a])
-     (lb = lsd[b])
-     (l = add_d[la,lb])
+     (l = add_d[lsd[a],lsd[b]])
      (m=add[zpfx[msds[a]],zpfx[msds[b]]])
      (ignore=(msds[l] > "1" % ((^m=inc[m]) (^l=l > /1(.)/\1/))))
      m l))
@@ -73,3 +71,32 @@ sub_d[a,b]:
 "80"%"8" "81"%"7" "82"%"6" "83"%"5" "84"%"4" "85"%"3" "86"%"2" "87"%"1" "88"%"0" "89"%"-1" 
 "90"%"9" "91"%"8" "92"%"7" "93"%"6" "94"%"5" "95"%"4" "96"%"3" "97"%"2" "98"%"1" "99"%"0"
 );
+
+msd[a]: a>/^0*(.).*$/\1/;
+lsds[a]: a>/^0*.(.*)$/\1/;
+
+gt_d[a,b]:
+  sub_d[a,b]>/^[^-]*$/t/>/^.*-.*$/f/;
+
+gt[a,b]:
+  gt_d[msd[a],msd[b]]>(
+    "t"%"t"
+    "f"%
+  );
+
+sub[a,b]:
+  (r="NaN")
+  (ignore=a>"0"%(^r="-"b))
+  (ignore=b>"0"%(^r=a))
+  (r>"NaN"%(
+    gt[lsd[a],lsd[b]]>(
+      "t"%((l = sub_d[lsd[a],lsd[b]])
+           (ma = msds[a])
+           (ignore=msds[l]>"-"%((^ma=zpfx[dec[ma]]) (^l=inc[sub_d["9",lsd[l]]])))
+           (m = sub[ma,msds[b]])
+           zupfx[m zupfx[l]])
+      "f"%("-" sub[b,a]))
+  ));
+
+//     (ignore=(msds[l] > "1" % ((^m=inc[m]) (^l=l > /1(.)/\1/))))
+
