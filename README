@@ -13,9 +13,15 @@ http://www.schneertz.com/rmutt/
 
 VERSION
 
-2.6
+2.7
 
 CHANGE HISTORY
+
+2.7
+
+* new syntax: now not just literals are allowed on the lhs
+  of mappings. regexes are too, and the mapping will "fire"
+  if the regex matches. (e.g., foo: "814" > /1/ % "contains 1";)
 
 2.6
 
