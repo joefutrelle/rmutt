@@ -1,0 +1,16 @@
+#include "eng.rm"
+#include "util.rm"
+#include "chars.rm"
+
+top: title>cap "\n";
+title: ns " " np ": " p;
+p: adj " " np " in " mileu;
+mileu: name>cap "ian " discipline;
+discipline: ns ("ology"|"ics");
+
+// imports
+cap:util.xcap;
+ns:eng.noun_singular;
+np:eng.noun_plural;
+adj:eng.adj;
+name:eng.noun_name;

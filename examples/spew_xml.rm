@@ -5,7 +5,10 @@
 
 package spew_xml;
 
-doc: xml.pi["xml",xml.attr["version","1.0"]] "\n" (indent="") tag "\n";
+pi: xml.pi;
+attr: xml.attr;
+
+doc: pi["xml",attr["version","1.0"]] "\n" (indent="") tag "\n";
 
 tag: (n=name) (
   indent emptyTag[n],
