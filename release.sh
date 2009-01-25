@@ -1,6 +1,7 @@
 #!/bin/sh
 # this script is used to build releases. it requires access to a
 # non-public cvs repository.
+make
 VERSION=`./rmutt -v 2>&1 | sed -e 's/rmutt version //'`
 DIR="rmutt-${VERSION}"
 RELEASE_DIR=releases
