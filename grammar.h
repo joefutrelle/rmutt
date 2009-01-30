@@ -13,6 +13,7 @@ extern GRAMMAR *grammar_new(); /* create a grammar */
 extern void grammar_free(GRAMMAR *); /* free a grammar */
 
 extern void grammar_add(GRAMMAR *, RULE *); /* add a rule to a grammar */
+extern void grammar_addAll(GRAMMAR *, LIST *); /* add rules to a grammar */
 extern RULE *grammar_lookUp(GRAMMAR *, char *); /* look up a named rule in the grammar */
 
 /* expand the grambit of the grammar into a sequence of
@@ -27,4 +28,3 @@ extern char *grambit_toString(GRAMMAR *, GRAMBIT *);
 
 /* apply a transformation to a string in the context of a grammar */
 extern char *transform(GRAMMAR *g, char *,GRAMBIT *);
-

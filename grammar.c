@@ -54,6 +54,13 @@ void grammar_add(GRAMMAR *g, RULE *r) {
      }
 }
 
+void grammar_addAll(GRAMMAR *g, LIST *l) {
+  int i, len = list_length(l);
+  for(i = 0; i < len; i++) {
+    grammar_add(g,(RULE *)list_get(l,i));
+  }
+}
+
 static char *getLabel(char *packagedLabel) {
      int i;
      char *p;

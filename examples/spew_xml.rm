@@ -5,25 +5,23 @@
 
 package spew_xml;
 
-pi: xml.pi;
-attr: xml.attr;
+import pi,attr,start,end,empty from xml;
+import noun_singular from eng;
+import url from url;
 
 doc: pi["xml",attr["version","1.0"]] "\n" (indent="") tag "\n";
 
 tag: (n=name) (
-  indent emptyTag[n],
-  indent startTag[n] "\n" (node "\n"){1,6} indent endTag[n] 5
+  indent empty[n,attrs],
+  indent start[n,attrs] "\n" (node "\n"){1,6} indent end[n] 5
 );
-startTag[n]: xml.start[n,attrs];
-endTag[n]: xml.end[n];
-emptyTag[n]: xml.empty[n,attrs];
 
-name: eng.noun_singular > /[^A-Za-z]/_/;
+name: noun_singular > /[^A-Za-z]/_/;
 attrs:
- (attr{0,3})>/^ //;
+ (sattr{0,3})>/^ //;
 
-attr:
-  " "xml.attr[name,(name 5 | url.url)];
+sattr:
+  " " attr[name,(name 5 | url)];
 
 node: (indent=(indent "  ")) (tag | indent text 2);
 

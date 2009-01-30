@@ -2,6 +2,9 @@
 #include "chars.rm"
 #include "spew_xml.rm"
 
+import doc from spew_xml;
+import noun_singular from eng;
+
 top: (directory=name)
  "mkdir " directory "\n"
  "cd " directory "\n"
@@ -15,8 +18,8 @@ top: (directory=name)
 fs: (directory=".") nodes;
 nodes: node{0,4} 2 | node{5,9};
 node:
-  "cat > " file "<<EOF\n" spew_xml.doc "EOF\n" 3 |
+  "cat > " file "<<EOF\n" doc "EOF\n" 3 |
   dir;
 file: directory "/" name ".xml";
 dir: "mkdir -p " (directory=(directory "/" name)) directory "/\n" nodes;
-name: eng.noun_singular > /[^A-Za-z]/_/;
+name: noun_singular > /[^A-Za-z]/_/;

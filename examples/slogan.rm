@@ -2,17 +2,22 @@
 #include "util.rm"
 #include "chars.rm"
 
+import an,cap from util;
+import digit from chars;
+import verb_trans_gerund,verb_intrans_gerund from eng;
+import adv,adj,noun_singular,noun_plural from eng;
+
 slogans: slogan{10};
-slogan: gvp > util.xcap " since " year ".\n";
-year: "19" chars.digit{2} , "200" ("0","1","2","3","4");
-gvp: gvp_trans , gvp_intrans;
-gvp_trans: advp eng.verb_trans_gerund " " np;
-gvp_intrans: advp eng.verb_intrans_gerund;
-np: snp , pnp;
-snp: (art " " eng.adv) > util.xan " " eng.adj " " eng.noun_singular ,
-    (art " " eng.adj) > util.xan " " eng.noun_singular ,
-    (art " " eng.noun_singular) > util.xan;
-pnp:((eng.adv " ",) eng.adj " ",) eng.noun_plural;
-art: "a","the";
-advp: (eng.adv " ",);
+slogan: cap[gvp] " since " year ".\n";
+year: ("19"|"20") digit{2};
+gvp: gvp_trans | gvp_intrans;
+gvp_trans: advp verb_trans_gerund " " np;
+gvp_intrans: advp verb_intrans_gerund;
+np: snp | pnp;
+snp: art[adv] " " adj " " noun_singular |
+    art[adj] " " noun_singular |
+    art[noun_singular];
+pnp:((adv " ",) adj " ",) noun_plural;
+art[p]: an[("a"|"the") " " p];
+advp: (adv " "|);
 

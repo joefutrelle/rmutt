@@ -1,7 +1,8 @@
 #include "util.rm"
 
+import cap,an from util;
+
 top: reviews;
-cap[s]:util.cap[s];
 _:" ";
 review:  "<b>" rating "</b><i>" wineName "</i>" price "<br>\n" cap[description] _ cap[recommendation]
 ;reviews:  review "<p>" review "<p>" review "<p>" review "<p>"  review "<p>"  review "<p>" review "<p>" review "<p>" review "<p>" review "<p>"
@@ -28,12 +29,12 @@ review:  "<b>" rating "</b><i>" wineName "</i>" price "<br>\n" cap[description] 
 |  plentiful _ tiers _ make _ "this" _ wine _ qualified
 |  subadjectival "," _ "this" _ wine _ isComparableToA _ judgement _ end _ province "-- without the" _ tiers
 ;conversational:  "a lesser" _ wine _ "wouldn't have the" _ tiers _ "that" _ make _ "this" _ comparableToA _ judgement _ end _ province
-|  "one rarely" _ comesAcross _ ("a" _ province)>util.xan _ "this" _ qualified "--" but ", don't expect" _ tier
+|  "one rarely" _ comesAcross _ an["a" _ province] _ "this" _ qualified "--" but ", don't expect" _ tier
 |  "since" _ pastyear "," _ brand _ "has been" _ producing _ judgement _ province "-- but never with the" _ tiers _ "that" _ affect _ "this" _ wine
 | "not" _ untilThis _ "has" _ brand _ produced _ suchGoodStuff
 | "unless" _ youLike _ quality "," _ tooBad
 | "finally, a" _ province _ "with" _ tiers "-- and" _ tier
-;suchGoodStuff:  tiers _ "this" _ judgement | tannins _ "this" _ judgement | ("a" _ finish)>util.xan _ "this" _ judgement
+;suchGoodStuff:  tiers _ "this" _ judgement | tannins _ "this" _ judgement | an["a" _ finish] _ "this" _ judgement
 | "such" _ judgement _ tannins
 ;untilThis:  "until this" _ wine | "since" _ pastyear
 ;produced:  "produced" | "given us" | "come up with" | dazzled _ "us with"

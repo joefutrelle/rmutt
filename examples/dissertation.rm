@@ -2,15 +2,13 @@
 #include "util.rm"
 #include "chars.rm"
 
-top: title>cap "\n";
-title: ns " " np ": " p;
-p: adj " " np " in " mileu;
-mileu: name>cap "ian " discipline;
-discipline: ns ("ology"|"ics");
-
 // imports
-cap:util.xcap;
-ns:eng.noun_singular;
-np:eng.noun_plural;
-adj:eng.adj;
-name:eng.noun_name;
+import cap from util;
+import noun_singular,noun_plural,adj,noun_name from eng;
+
+top: cap[title] "\n";
+title: noun_singular " " noun_plural ": " p;
+p: adj " " noun_plural " in " mileu;
+mileu: cap[noun_name] "ian " discipline;
+discipline: noun_singular ("ology"|"ics");
+

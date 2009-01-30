@@ -2,30 +2,36 @@
 #include "eng.rm"
 #include "sentence.rm"
 #include "url.rm"
+#include "chars.rm"
 
 package jcr_sv;
 
+import header,attr,start,end from xml;
+import url from url;
+import alpha,digit,nzDigit from chars;
+import noun_singular from eng;
+
 top:
   (i="")
-  xml.header "\n"
+  header "\n"
   rootNode;
 
 rootNode:
   (attrs=
-    xml.attr["xmlns:ns",url.url] " "
-    xml.attr["xmlns:jcr","http://www.jcp.org/jcr/1.0"] " "
-    xml.attr["xmlns:nt","http://www.jcp.org/jcr/nt/1.0"] " "
-    xml.attr["xmlns:sv","http://www.jcp.org/jcr/sv/1.0"])
+    attr["xmlns:ns",url] " "
+    attr["xmlns:jcr","http://www.jcp.org/jcr/1.0"] " "
+    attr["xmlns:nt","http://www.jcp.org/jcr/nt/1.0"] " "
+    attr["xmlns:sv","http://www.jcp.org/jcr/sv/1.0"])
   node["jcr:root",attrs];
 
 node[n,attrs]:
-  (attrs=attrs" "xml.attr["sv:name",n])
-  i xml.start["sv:node",attrs] "\n"
+  (attrs=attrs" "attr["sv:name",n])
+  i start["sv:node",attrs] "\n"
   ((i=i"  ")
    primaryType
    properties
    children)
-  i xml.end["sv:node"] "\n";
+  i end["sv:node"] "\n";
 
 primaryType:
   property["jcr:primaryType","Name",value["nt:base"]];
@@ -42,34 +48,34 @@ properties:
 ;
 
 property[name,type,values]:
-  i xml.start["sv:property",xml.attr["sv:name",name]" "xml.attr["sv:type",type]] "\n"
+  i start["sv:property",attr["sv:name",name]" "attr["sv:type",type]] "\n"
     values
-  i xml.end["sv:property"] "\n";
+  i end["sv:property"] "\n";
 
 value[content]:
-  i "  " xml.start["sv:value",] content xml.end["sv:value"] "\n";
+  i "  " start["sv:value",] content end["sv:value"] "\n";
 
 long:
-  "-"? chars.nzDigit chars.digit{0,5};
+  "-"? nzDigit digit{0,5};
 
 binary:
-  ((chars.alpha 52 | chars.digit 10 | "/" | "+"){4}){0,256};
+  ((alpha 52 | digit 10 | "/" | "+"){4}){0,256};
 
 double:
-  "-"? chars.nzDigit chars.digit{0,5} "." chars.digit{1,5};
+  "-"? nzDigit digit{0,5} "." digit{1,5};
 
 boolean:
   "true" | "false";
 
 path:
   (".." ("/.."){0,3})?
-  ("/" name ("[" chars.nzDigit "]")?){0,4};
+  ("/" name ("[" nzDigit "]")?){0,4};
 
 date:
   year "-" month "-" day "T" hour ":" minute ":" second "." fracSeconds tzd;
 
 year:
-  ("19"|"20") chars.digit{2};
+  ("19"|"20") digit{2};
 
 month:
   "01","02","03","04","05","06","07","08","09","10","11","12";
@@ -83,11 +89,11 @@ hour:
   "13","14","15","16","17","18","19","20","21","22","23";
 
 minute:
-  ("0","1","2","3","4","5") chars.digit;
+  ("0","1","2","3","4","5") digit;
 second: minute;
 
 fracSeconds:
-  chars.digit{5};
+  digit{5};
 
 tzd: "-05:00";
 
@@ -101,4 +107,4 @@ children:
 child: node[name,];
 
 name:
-  "ns:" eng.noun_singular > /[^A-Za-z]/_/;
+  "ns:" noun_singular > /[^A-Za-z]/_/;

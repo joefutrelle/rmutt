@@ -3,9 +3,14 @@
 
 package sentence;
 
+import cap,an from util;
+import verb_trans_past from eng;
+import noun_singular,noun_plural,noun_name from eng;
+import adj,adv from eng;
+
 line: s "\n";
 
-s: subject > util.xcap " " eng.verb_trans_past " " object ".";
+s: cap[subject] " " verb_trans_past " " object ".";
 subject: (sense="subject") np;
 object: (sense="object") np;
 np:
@@ -18,11 +23,11 @@ n: animate >(
   "n" % thing
 );
 thing: number >(
-  "singular" % ((noun=eng.noun_singular) qualifiedNoun)
-  "plural" % ((noun=eng.noun_plural) qualifiedNoun)
+  "singular" % ((noun=noun_singular) qualifiedNoun)
+  "plural" % ((noun=noun_plural) qualifiedNoun)
 );
 actor: number >(
-  "singular" % (eng.noun_name, pronoun)
+  "singular" % (noun_name, pronoun)
   "plural" % (pronoun)
 );
 pronoun: sense >(
@@ -49,11 +54,10 @@ pronoun: sense >(
   )
 );
 qualifiedNoun:
-    (art " " eng.adv) > util.xan " " eng.adj " " noun ,
-    (art " " eng.adj) > util.xan " " noun ,
-    (art " " noun) > util.xan;
+    artify[((adv " ")? adj " ")? noun];
 art: number >(
   "singular" % ("a","the")
   "plural" % "the"
 );
+artify[p]: an[art " " p];
 

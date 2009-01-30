@@ -1,6 +1,10 @@
 #include "chars.rm"
+#include "eng.rm"
 
 package url;
+
+import digit,lc from chars;
+import noun_singular from eng;
 
 top: (url "\n"){20};
 
@@ -20,7 +24,7 @@ tld:
 
 port:
  nonzero_digit
- chars.digit{0,4};
+ digit{0,4};
 
 fragment:
  name;
@@ -30,18 +34,18 @@ ip:
 
 ottff:
  nonzero_digit |
- nonzero_digit chars.digit |
- "1" chars.digit{2} |
- "2" ("0"|"1"|"2"|"3"|"4") chars.digit |
+ nonzero_digit digit |
+ "1" digit{2} |
+ "2" ("0"|"1"|"2"|"3"|"4") digit |
  "25" ("0"|"1"|"2"|"3"|"4"|"5");
 
 nonzero_digit:
  "1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9";
 
-path: directory "/" label "." chars.lc{3};
+path: directory "/" label "." lc{3};
 directory:
  "/" label directory?;
-label: eng.noun_singular > /[^A-Za-z]/_/;
+label: noun_singular > /[^A-Za-z]/_/;
 name: label > /_//;
 
 params:
@@ -49,4 +53,4 @@ params:
  param "&" params;
 
 param:
- chars.lc "=" (label | chars.digit{1,5});
+ lc "=" (label | digit{1,5});

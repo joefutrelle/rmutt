@@ -1,0 +1,13 @@
+// imports
+top: baz.quux;
+
+package foo;
+
+bar: "quux"|"fnord";
+
+package baz;
+
+import bar from foo;
+
+quux: "snooby " bar;
+

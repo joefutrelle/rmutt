@@ -46,6 +46,8 @@ filename        [-A-Za-z0-9_./ ]+
 %%
 
 package { return(PACKAGE); }
+import { return(IMPORT); }
+from { return(FROM); }
 
 \/\/ { BEGIN(COMMENT); }
 <COMMENT>\n {

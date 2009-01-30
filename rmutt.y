@@ -31,6 +31,8 @@ extern char *topRule;
 }
 
 %token PACKAGE
+%token IMPORT
+%token FROM
 %token <str> LABEL
 %token <str> LITERAL
 %token <integer> INTEGER
@@ -42,11 +44,12 @@ extern char *topRule;
 %type <list> Body
 %type <list> Arguments
 %type <list> Terms
+%type <list> Imports
 %type <grambit> Term
 %type <grambit> QualifiedTerm
 %type <grambit> Rule
 %type <grambit> ScopedRule
-%type <grambit> Statement
+%type <list> StatementBlock
 %type <dict> Grammar
 
 %start Top
@@ -65,24 +68,24 @@ Top:
   };
 
 Grammar: /* a Grammar is a DICT of Rules, keyed by label */
-  Statement {
+  StatementBlock {
      GRAMMAR *gram = grammar_new();
      if($1) {
-	  grammar_add(gram,$1);
+       grammar_addAll(gram,$1);
      }
      $$=(void *)gram;
   }
-  | Grammar Statement {
+  | Grammar StatementBlock {
     if($2) {
-	 grammar_add((GRAMMAR *)$1,$2);
+      grammar_addAll((GRAMMAR *)$1,$2);
     }
     $$=$1;
   }
   ;
 
-Statement: /* each Statement either adds a Rule or changes the package */
+StatementBlock: /* each Statement either adds a Rule or changes the package */
   Rule ';' {
-       $$=$1;
+       $$=list_addToNew($1);
        if(!topRule && includeStackPtr == 0) {
 	    topRule = rule_getLabel($1);
        }
@@ -98,7 +101,32 @@ Statement: /* each Statement either adds a Rule or changes the package */
        free($2);
        $$=NULL;
   }
+  | IMPORT Imports FROM LABEL ';' {
+    int i, len = list_length($2);
+    $$=list_new();
+    for(i = 0; i < len; i++) {
+      GRAMBIT *import;
+      char *label = list_get($2,i);
+      GSTR *fqn = gstr_new($4);
+      gstr_append(fqn,".");
+      gstr_append(fqn,label);
+      import = binding_new(label,label_new(gstr_detach(fqn)),LOCAL_SCOPE);
+      list_add($$,import);
+    }
+  }
   ;
+
+Imports:
+   LABEL {
+	LIST *imports = list_new();
+	list_add(imports,strdup($1));
+	$$=imports;
+   }
+   | LABEL ',' Imports {
+	list_add($3,strdup($1));
+	$$=$3;
+   }
+   ;
 
 ScopedRule:
   Rule {

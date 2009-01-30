@@ -1,8 +1,8 @@
 #include "util.rm"
 
+import cap from util;
 top: RECIPE;
 _:" ";
-cap[x]: util.cap[x];
 Prelude:  "Dear Adam,\n Here's a sampling of the recipes I've been developing.\nIf any of them sound good let me know and I'll send the full text.\n\n"
 ;Body:  RECIPE
 ;Ending:  "\n\nHope you like them. \n Joe"
