@@ -3,12 +3,15 @@
 // author -- originally written in common lisp
 // joe futrelle, 1993
 
-top: (s>util.xcap "\n"){20};
+import cap from util;
+
+top: (cap[s] "\n"){20};
+artp[c]: util.an[art _ c];
 s: clause period | clause period | clause period | si _ clause period | clause period | clause period | clause period | truism period | si _ clause period | clause comma _ cc _ clause period | clause _ sc _ clause period | question;
 clause: subj _ pred | subj _ pred | subj _ pred | subj _ pred | subj _ pred | subj _ pred _ time-pp | subj _ pred _ simile | subj _ pred | subj _ went _ to _ place;
 subj: np | np | subj-pn;
-np: bnp | bnp | bnp | bnp | bnp | bnp | bnp | bnp | pn comma _ art _ famous _ n comma;
-bnp: number _ money | an | qn | some _ qn | art _ mass _ of _ qn | art _ adj _ mass _ of _ qn | art _ mass _ of _ adj _ qn | pn | art _ n | art _ adjp _ n | art _ n | pn | art _ n | art _ adjp _ n | art _ n | pos-pn _ n | pos-pn _ adjp _ n | pos-pn _ n | pos-pn _ adjp _ n | rel-pn _ n | rel-pn _ adjp _ n;
+np: bnp | bnp | bnp | bnp | bnp | bnp | bnp | bnp | pn comma _ artp[famous] _ n comma;
+bnp: number _ money | an | qn | some _ qn | artp[mass] _ of _ qn | artp[adj] _ mass _ of _ qn | artp[mass] _ of _ adj _ qn | pn | artp[n] | artp[adjp] _ n | artp[n] | pn | artp[n] | artp[adjp] _ n | artp[n] | pos-pn _ n | pos-pn _ adjp _ n | pos-pn _ n | pos-pn _ adjp _ n | rel-pn _ n | rel-pn _ adjp _ n;
 time-pp: for _ number _ time-unit;
 adjp: adj | adj | adj | adj | adj | adj _ adj | adv _ adj | adj _ cc _ adj;
 pp: prep _ objp;
@@ -20,7 +23,7 @@ title: np | n | subj _ pred | gerundt _ obj | gerundi _ prep _ obj | n _ n | n _
 dialog: quote bdialog unquote said _ np period | quote bdialog unquote subj _ said _ to _ obj period | quote bdialog unquote subj _ said period | subj _ said _ quote bdialog unquote | subj _ said _ quote bdialog unquote cc _ pred period;
 bdialog: clause period | exclamation | exclamation;
 truism: an _ is _ the _ an _ of _ an | an _ is _ the _ an _ of _ an | an _ is _ np | an _ is _ np | an _ is _ the _ qn _ of _ an | an _ is _ the _ an _ of _ np;
-simile: like _ art _ adj _ n | like _ art _ adj _ n | like _ art _ adj _ n | like _ cliche-simile | like _ cliche-simile | like _ qn _ pp | like _ an _ pp;
+simile: like _ artp[adj] _ n | like _ artp[adj] _ n | like _ artp[adj] _ n | like _ cliche-simile | like _ cliche-simile | like _ qn _ pp | like _ an _ pp;
 author: pn;
 question: questionb;
 questionb: who-what _ pred question-mark | which _ n _ pred question-mark;
