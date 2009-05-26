@@ -5,7 +5,8 @@
 
 import cap,an from util;
 
-top: (cap[Sent] "\n"){20};
+top: (pp[cap[Sent]] "\n"){20};
+pp[s]: s>/,\././; // clean up spurious pronunciation
 _:" ";
 BodyOfNounPhrase: AdjPhrase _ noun _ PrepPhrase|AdjPhrase _ noun|AdjPhrase _ noun|AdjPhrase _ noun|noun "," _ RelModClause ","|noun _ PrepPhrase|noun _ noun|noun|noun|noun|noun|noun|noun|noun|noun|noun|noun|noun;
 Subj: NounPhrase|NounPhrase|NounPhrase|subject-pronoun|subject-pronoun;
