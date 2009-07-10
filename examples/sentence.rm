@@ -4,19 +4,23 @@
 package sentence;
 
 import cap,an from util;
-import verb_trans_past from eng;
+import verb_intrans_past,verb_trans_past from eng;
 import noun_singular,noun_plural,noun_name from eng;
 import adj,adv from eng;
 
-line: s "\n";
+line: cap[s] "\n";
 
-s: cap[subject] " " verb_trans_past " " object ".";
+s:
+  subject " " (
+    verb_trans_past " " object 3 | qualified_verb_intrans_past
+  ) "."|
+;
 subject: (sense="subject") np;
 object: (sense="object") np;
 np:
   (person="1","2","3")
   (number="singular","plural")
-  (animate="y","n")
+  (animate="y"4,"n")
   n;
 n: animate >(
   "y" % actor
@@ -60,4 +64,12 @@ art: number >(
   "plural" % "the"
 );
 artify[p]: an[art " " p];
+qualified_verb_intrans_past:
+   verb_intrans_past 4 |
+   adv " " verb_intrans_past |
+   verb_intrans_past " " advp;
+advp:
+   "like " an["a " np] |
+   "so that " s;
+   
 

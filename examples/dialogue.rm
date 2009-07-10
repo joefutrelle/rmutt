@@ -2,6 +2,9 @@
 
 package dialogue;
 
+import cap from util;
+import adv,adj from eng;
+
 main: (
   (c1 = eng.noun_name)
   (c2 = eng.noun_name)
@@ -10,7 +13,7 @@ main: (
 ){1,20};
 
 dialogue: (
-  "\"" (k? statement) > util.xcap ",\"" " " said_speaker ".\n" 2|
+  "\"" cap[k? statement]  ",\"" " " said_speaker ".\n" 2|
   "\"" statement > util.xcap ",\"" " " said_speaker ", \"" k statement ".\"\n"
 );
 
@@ -54,7 +57,8 @@ said:
 ;
 
 qualification: (
-  eng.adv |
-  ("as"|"while"|"when"|"after") " " grammar.subj " " grammar.vp_past |
-  "between " eng.noun_plural " of " eng.noun_singular
+  ("as"|"as if"|"so that"|"while"|"when"|"after") " " grammar.subj " " grammar.vp_past |
+  "between " eng.noun_plural " of " eng.noun_singular |
+  "despite being " adv " " adj |
+  "even though " statement
 );
