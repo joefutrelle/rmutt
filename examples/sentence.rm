@@ -13,7 +13,7 @@ line: cap[s] "\n";
 s:
   subject " " (
     verb_trans_past " " object 3 | qualified_verb_intrans_past
-  ) "."|
+  ) "."
 ;
 subject: (sense="subject") np;
 object: (sense="object") np;
@@ -69,7 +69,7 @@ qualified_verb_intrans_past:
    adv " " verb_intrans_past |
    verb_intrans_past " " advp;
 advp:
-   "like " an["a " np] |
+   "like " (sense="object") np |
    "so that " s;
    
 
