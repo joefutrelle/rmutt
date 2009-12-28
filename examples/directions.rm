@@ -64,10 +64,15 @@ town-turn[prev,next,dir]:
  (at _ (next|intersection[prev,next]) "," _ hanga[dir]) |
  hanga[dir] _ ("onto"|at) _ next;
 
+town-pass[thing]:
+ ("continue past"|"you'll pass"|"go past") _ thing _ "on the" _ ("left"|"right");
+
 town-wander[prev,next]:
  (prev-distance = town-distance)
  (dir = turn-direction)
+ (landmark = town-landmark[prev])
  town-travel[prev-distance] _ "on" _ prev ".\n"
+ (town-pass[landmark] ".\n"|3)
  town-turn[prev,next,dir]
  (".\n" town-wander[next,street] 3 |
   (next-distance = town-distance)
@@ -80,11 +85,23 @@ town-wander[prev,next]:
  town-turn[next,prev,reverse-turn[dir]] ", then "
  town-travel-back[prev-distance,prev] ".\n";
 
+town-landmark:
+ "a gas station" |
+ "a cell-phone tower" |
+ "a " eng.noun_singular " " ("store"|"shop"|"stand") |
+ "a drugstore" |
+ "a " ("small"|"large") " apartment " ("building"|"complex") |
+ town-building-any-street;
+
 town-arrive-at[place]:
  ("reach"|"arrive at"|"get to")_ place;
 
 town-building[street]:
   street-address[street] |
+  "the" _ street _ ("church"|"train station"|"YMCA"|"library") |
+  town-building-any-street;
+
+town-building-any-street:
   "the " eng.noun_place _ ("building"|"institute"|"center") |
   eng.noun_name "'s" (_ eng.noun_singular _ ("shack"|"palace"|"hut"))? |
   "saint " eng.noun_name "'s" _ ("chapel"|"cathedral"|"church") |
@@ -101,7 +118,8 @@ town-exit[building,street]:
 // interiors
 //
 
-int: "once inside, sign your name in the book with the word " eng.noun_singular " written on the cover";
+int:
+ "once inside, sign your name in the book with the word " eng.noun_singular " written on the cover";
 
 int-travel:
  "take the " ("elevator"|"stairs"|"escalator")
