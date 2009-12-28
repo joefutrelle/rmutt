@@ -70,20 +70,28 @@ town-pass[thing]:
 town-wander[prev,next]:
  (prev-distance = town-distance)
  (dir = turn-direction)
- (landmark = town-landmark[prev])
+ (landmark = town-landmark[prev]|3)
  town-travel[prev-distance] _ "on" _ prev ".\n"
- (town-pass[landmark] ".\n"|3)
+ landmark > /./ % (town-pass[landmark] ".\n")
  town-turn[prev,next,dir]
- (".\n" town-wander[next,street] 3 |
+ (".\n" town-wander[next,street] 4 |
   (next-distance = town-distance)
   (building = town-building[next])
   " and " town-travel[next-distance] " until you " town-arrive-at[building] ".\n"
-  town-enter[building] ".\n"
+  town-enter[building,next] ".\n"
   int ".\n"
   town-exit[building,next] ".\n"
   town-travel-back[next-distance] ".\n")
  town-turn[next,prev,reverse-turn[dir]] ", then "
- town-travel-back[prev-distance,prev] ".\n";
+ town-travel-back[prev-distance,prev]
+ landmark > /./ % town-repass[landmark]
+ ".\n"; 
+
+town-repass[landmark]:
+ (l = landmark > /^a (.*)/the \1/)
+ (", passing " l " again" |
+ ".\nyou'll see " l " again" |
+ " back past " l);
 
 town-landmark:
  "a gas station" |
@@ -108,8 +116,21 @@ town-building-any-street:
   "the" _ ("police"|"fire") _ "station" |
   ("W"|"K") chars.uc{3};
 
-town-enter[building]:
- "enter " building;
+building-door:
+  "the "
+  ("front"|"back"|"side"|"street-facing"|"rear-facing"|map-direction) _
+  ("door"|"entrance"|"gate");
+
+enter-find:"locate"|"find"|"go to the";
+
+town-enter[building,street]:
+ ("enter"|"go into"|"gain entrance to")
+ _ building
+ (_ ("through"|"via") _ building-door)
+| enter-find " the " building-door " that's "
+ ("right on"|"down a little bit from"|"set back a bit from") _
+ ("the street"|street)
+ " and enter the building";
 
 town-exit[building,street]:
  ("exit"|"leave"|"head out of") _ (building|"the building")
@@ -119,9 +140,23 @@ town-exit[building,street]:
 //
 
 int:
- "once inside, sign your name in the book with the word " eng.noun_singular " written on the cover";
+ "once inside, " int-travel ", and go to room " street-number ".\n"
+ "on the desk will be a " int-book ". sign your name it.\n"
+ ("take the" _ int-lift _ "back to" _ int-entrance |
+  ("go back"|"return") _ "to" _ int-entrance _ "on" _ int-lift);
+
+int-entrance:
+ "the" _ ("entrance"|"door") (_ "you came in");
+
+int-book:
+ "book with the word " eng.noun_singular " written on the cover";
+
+int-lift:
+ "the" _ ("service "? "elevator"|"stairs"|"escalator");
 
 int-travel:
- "take the " ("elevator"|"stairs"|"escalator")
- "to the " numbers-ordinal.two-digit " floor";
+ "take" _ int-lift _
+ "to the " numbers-ordinal.two-digit " floor" |
+ "go" _ ("up"|"down") _ (numbers.nz-digit _ ("floors"|"stories"))>/one (.+)s/one \1/
+ ("on the" _ int-lift)?;
 
