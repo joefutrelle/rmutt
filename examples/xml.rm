@@ -1,8 +1,12 @@
 package xml;
 
-top:
-  header
-  empty["foo",];
+top: // example
+  header "\n"
+  start["foo",""] "\n"
+  "  "start["clam",attr["x","7"] " " attr["y","5"]] "\n"
+  "    "pcdata["This is some data & stuff"] "\n"
+  "  "end["clam"] "\n"
+  end["foo"] "\n";
 
 header:
   pi["xml",attr["version","1.0"]];

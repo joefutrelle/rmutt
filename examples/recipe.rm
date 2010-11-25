@@ -1,6 +1,6 @@
 #include "util.rm"
 
-import cap from util;
+import cap,tc from util;
 top: RECIPE;
 _:" ";
 Prelude:  "Dear Adam,\n Here's a sampling of the recipes I've been developing.\nIf any of them sound good let me know and I'll send the full text.\n\n"
@@ -134,7 +134,7 @@ Prelude:  "Dear Adam,\n Here's a sampling of the recipes I've been developing.\n
 | "on a bed of lettuce" | "cold" | "hot" | "flambe" | "with chutney"
 | "with ketchup" | "immediately" | "on chilled plates"
 ;MIXTURE:  "mix" | "mixture" | "dough" | "paste" | "filling"
-;RECIPE:  "<h1>" NAME "</h1>\n" cap[COMMENTS] _ cap[TRY-THIS] "<br>\n<h2><i>Ingredients:</i></h2><ul>"  INGREDS "</ul><br>\n"  INSTRUCTIONS "<br>\n"
+;RECIPE:  "<h1>" tc[NAME] "</h1>\n" cap[COMMENTS] _ cap[TRY-THIS] "<br>\n<h2><i>Ingredients:</i></h2><ul>"  INGREDS "</ul><br>\n"  INSTRUCTIONS "<br>\n"
 ;INSTRUCTIONS:  "<h2><i>Instructions:</i></h2>"  cap[PREP-FIRST] _ INST-BODY _ cap[GARNISH-P] _ cap[SERVE-P] _ cap[SERVES]
 ;INST-BODY:  IB
 |             IB _ IB
