@@ -6,9 +6,9 @@
 /* generic list support */
 
 typedef struct _list {
-     long length;     /* how many elements are in the list */
-     long capacity;   /* out of how many possible */
-     void **data;     /* the items */
+    long length; /* how many elements are in the list */
+    long capacity; /* out of how many possible */
+    void **data; /* the items */
 } LIST;
 
 extern LIST *list_new(); /* create a list */

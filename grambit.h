@@ -24,17 +24,17 @@
 #define GLOBAL_SCOPE 2     /* first ancestor grammar without a parent */
 
 typedef struct _grambit {
-     int type;      /* what type of grambit */
-     char *l;       /* label or literal */
-     int scope;     /* scope of rule/assignment */
-     LIST *choices; /* choices (for choice, rule or assignment) */
-     int min_x; /* minimum number of times (for label, literal, or choice) */
-     int max_x; /* max      "     "   " ... */
-     char *rx_rx; /* regex to replace */
-     char *rx_rep; /* string to replace it with */
-     /* rx_rx is also used for simple mappings */
-     struct _grambit *source; /* source grambit for transformation */
-     struct _grambit *trans; /* trans grambit for transformation or mapping */
+    int type; /* what type of grambit */
+    char *l; /* label or literal */
+    int scope; /* scope of rule/assignment */
+    LIST *choices; /* choices (for choice, rule or assignment) */
+    int min_x; /* minimum number of times (for label, literal, or choice) */
+    int max_x; /* max      "     "   " ... */
+    char *rx_rx; /* regex to replace */
+    char *rx_rep; /* string to replace it with */
+    /* rx_rx is also used for simple mappings */
+    struct _grambit *source; /* source grambit for transformation */
+    struct _grambit *trans; /* trans grambit for transformation or mapping */
 } GRAMBIT;
 
 /* synonyms for grambit for readability of code */
@@ -71,7 +71,7 @@ extern void literal_append(GRAMBIT *, char *); /* append a string to the end of 
 extern void grambit_print(GRAMBIT *, FILE *); /* for debugging */
 
 /* maximum number of digits in number of positional arguments.
-   8 is ridiculously high allowing for 99999999 positional arguments. */
+ 8 is ridiculously high allowing for 99999999 positional arguments. */
 #define MAX_VAR_LENGTH 8
 
 #endif

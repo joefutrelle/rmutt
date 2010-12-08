@@ -13,13 +13,13 @@
 typedef void (*TraversalAction)(char *key, void *value, void *arg);
 
 typedef struct _dict_entry {
-     char *key;
-     void *value;
+    char *key;
+    void *value;
 } DICT_ENTRY;
 
 typedef struct _dict_node {
-     LIST *entries; /* entries (of type DICT_ENTRY) */
-     struct _dict_node *children[26];
+    LIST *entries; /* entries (of type DICT_ENTRY) */
+    struct _dict_node *children[26];
 } DICT;
 
 extern DICT *dict_new();
