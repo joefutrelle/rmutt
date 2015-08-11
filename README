@@ -1,5 +1,12 @@
 Hello, welcome to rmutt!
 
+NEWS
+
+A port of rmutt that includes a Javascript API has been developed
+by rstuven, called rmutt.js:
+
+http://github.com/rstuven/rmutt.js
+
 INTRODUCTION
 
 "rmutt" is a utility for generating random text from context-free
@@ -9,7 +16,7 @@ the hilarious Postmodern Thesis Generator.
 
 For more information and complete documentation see
 
-http://www.schneertz.com/rmutt/
+http://github.com/joefutrelle/rmutt
 
 VERSION
 
